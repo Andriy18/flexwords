@@ -5,8 +5,6 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexWords.Translator", "FlexWords.Translator\FlexWords.Translator.csproj", "{1290B90A-A886-4DAA-ADCE-6519F40DFA5A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexWords.Test", "FlexWords.Test\FlexWords.Test.csproj", "{71C392A6-E8D4-4B29-B98E-2B3B29355E9F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexWords.Constants", "FlexWords.Constants\FlexWords.Constants.csproj", "{EFCECDC0-7DBB-4C2C-B5D7-B6DE516A2513}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexWords.Entities", "FlexWords.Entities\FlexWords.Entities.csproj", "{7BBE686C-B9E5-47AC-89F9-183EBCF1FE66}"
@@ -33,14 +31,6 @@ Global
 		{1290B90A-A886-4DAA-ADCE-6519F40DFA5A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1290B90A-A886-4DAA-ADCE-6519F40DFA5A}.Release|x64.ActiveCfg = Release|Any CPU
 		{1290B90A-A886-4DAA-ADCE-6519F40DFA5A}.Release|x64.Build.0 = Release|Any CPU
-		{71C392A6-E8D4-4B29-B98E-2B3B29355E9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{71C392A6-E8D4-4B29-B98E-2B3B29355E9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{71C392A6-E8D4-4B29-B98E-2B3B29355E9F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{71C392A6-E8D4-4B29-B98E-2B3B29355E9F}.Debug|x64.Build.0 = Debug|Any CPU
-		{71C392A6-E8D4-4B29-B98E-2B3B29355E9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{71C392A6-E8D4-4B29-B98E-2B3B29355E9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{71C392A6-E8D4-4B29-B98E-2B3B29355E9F}.Release|x64.ActiveCfg = Release|Any CPU
-		{71C392A6-E8D4-4B29-B98E-2B3B29355E9F}.Release|x64.Build.0 = Release|Any CPU
 		{EFCECDC0-7DBB-4C2C-B5D7-B6DE516A2513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFCECDC0-7DBB-4C2C-B5D7-B6DE516A2513}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFCECDC0-7DBB-4C2C-B5D7-B6DE516A2513}.Debug|x64.ActiveCfg = Debug|Any CPU
