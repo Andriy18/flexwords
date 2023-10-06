@@ -15,14 +15,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexWords.Extensions", "Fle
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlexWords.Dialog", "FlexWords.Dialog\FlexWords.Dialog.csproj", "{8E1D3645-248C-4D57-A596-81313BCF8734}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "third-party", "third-party", "{1BF85FD1-125E-4774-B01C-8EA04C116995}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ReversoAPI.1.3.1", "ReversoAPI.1.3.1", "{C94B7697-DBA5-46F4-857B-80E3644C9C90}"
-	ProjectSection(SolutionItems) = preProject
-		third-party\ReversoAPI.1.3.1\Polly.dll = third-party\ReversoAPI.1.3.1\Polly.dll
-		third-party\ReversoAPI.1.3.1\ReversoAPI.Web.dll = third-party\ReversoAPI.1.3.1\ReversoAPI.Web.dll
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,9 +74,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{C94B7697-DBA5-46F4-857B-80E3644C9C90} = {1BF85FD1-125E-4774-B01C-8EA04C116995}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20300AAA-83D0-430E-9183-E8A00A79B39A}
