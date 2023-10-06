@@ -1,0 +1,1050 @@
+﻿<Window x:Class="FlexWords.Dialog.Controls.FlexWordsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:comps="clr-namespace:FlexWords.Dialog.Controls.Components"
+        xmlns:vm="clr-namespace:FlexWords.Dialog.ViewModels"
+        xmlns:conv="clr-namespace:FlexWords.Dialog.Converters"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Normal"
+        Height="600" Width="900"
+        Background="#202124"
+        Loaded="OnWindowLoaded"
+        SizeChanged="OnSizeChanged"
+        Closed="OnWindowClosed"
+        d:DataContext="{d:DesignInstance d:Type=vm:FlexWordsViewModel}">
+
+    <Window.Resources>
+        <conv:ReverseBooleanConverter x:Key="ReverseBoolean" />
+        
+        <Style x:Key="inputStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#707070" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Verdana" />
+            <Setter Property="Margin" Value="6 0" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="Width" Value="65" />
+            <Setter Property="HorizontalAlignment" Value="Left" />
+            <Setter Property="TextAlignment" Value="Left" />
+        </Style>
+
+        <Style x:Key="baseUnderlineTextBlock" TargetType="TextBlock">
+            <Setter Property="TextDecorations" Value="None" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="TextDecorations" Value="Underline" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="optionsNameStyle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#E5E5E5" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Verdana" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Margin" Value="10 0 0 0" />
+        </Style>
+
+        <Style x:Key="optionsNameStyleUnderline"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource baseUnderlineTextBlock}">
+            <Setter Property="Foreground" Value="#5F6368" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Verdana" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="9 0 10 0" />
+        </Style>
+
+        <Style x:Key="separatorBorder" TargetType="Border">
+            <Setter Property="Background" Value="#5F6368" />
+            <Setter Property="Width" Value="1" />
+            <Setter Property="Margin" Value="0 4 0 0" />
+            <Setter Property="HorizontalAlignment" Value="Right" />
+            <Setter Property="CornerRadius" Value="15 15 0 0" />
+        </Style>
+
+        <Style x:Key="topNameStyleUnderline"
+               TargetType="TextBlock"
+               BasedOn="{StaticResource baseUnderlineTextBlock}">
+            <Setter Property="Foreground" Value="#4B4C52" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Verdana" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="4 0" />
+        </Style>
+
+        <Style x:Key="bottomNameStyleUnderline" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#4B4C52" />
+            <Setter Property="FontSize" Value="10" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Verdana" />
+            <Setter Property="FontWeight" Value="Thin" />
+            <Setter Property="Margin" Value="6 0" />
+        </Style>
+
+        <Style x:Key="borderOpacity" TargetType="Border">
+            <Setter Property="Opacity" Value="1" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.6" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Name="__grid">
+        <Grid.RowDefinitions>
+            <RowDefinition>
+                <RowDefinition.Style>
+                    <Style TargetType="RowDefinition">
+                        <Setter Property="Height" Value="24" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FocusMode, Mode=OneWay}" Value="True">
+                                <Setter Property="Height" Value="0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
+            <RowDefinition Height="*" />
+            <RowDefinition>
+                <RowDefinition.Style>
+                    <Style TargetType="RowDefinition">
+                        <Setter Property="Height" Value="24" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FocusMode, Mode=OneWay}" Value="True">
+                                <Setter Property="Height" Value="0" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </RowDefinition.Style>
+            </RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1" Background="Transparent"
+              MouseWheel="OnMouseWheelChanged">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseUp">
+                    <i:InvokeCommandAction Command="{Binding OnCancelPopupOpenCommand}"
+                                           PassEventArgsToCommand="True" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
+            <StackPanel x:Name="textItemsContainer"
+                        VerticalAlignment="Center"
+                        Orientation="Vertical"
+                        Margin="100 0">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SizeChanged">
+                        <i:InvokeCommandAction Command="{Binding OnTextContainerSizeChangedCommand}"
+                                               PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </StackPanel>
+
+            <Popup x:Name="popupTranslateContent"
+                   d:DataContext="{d:DesignInstance d:Type=vm:WordPopupViewModel}"
+                   Placement="Bottom"
+                   MaxWidth="400"
+                   StaysOpen="False"
+                   PopupAnimation="Slide"
+                   AllowsTransparency="True"
+                   IsOpen="{Binding IsOpen}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Border x:Name="__popup_border"
+                            Background="#202124"
+                            BorderBrush="#5F6368"
+                            Grid.Row="1"
+                            Padding="6 4 6 6"
+                            BorderThickness="1"
+                            CornerRadius="7">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="{Binding MiddleRow, Mode=TwoWay}" />
+                                <RowDefinition Height="{Binding Row, Mode=TwoWay}" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border x:Name="__popup_separator"
+                                    Background="#5F6368"
+                                    Height="1"
+                                    Grid.Row="1"
+                                    Margin="-6 0"
+                                    VerticalAlignment="Center"
+                                    Grid.ColumnSpan="2"
+                                    BorderThickness="0" />
+
+                            <Border x:Name="__popup_top_copy"
+                                    VerticalAlignment="Top"
+                                    Background="Transparent"
+                                    Margin="{Binding CopyTextMargin, Mode=TwoWay}"
+                                    Height="{Binding CopyTextHeigth, Mode=TwoWay}"
+                                    Grid.Column="0" Grid.Row="0">
+                                <Path Stretch="Uniform"
+                                      Fill="#5F6368"
+                                      Data="{StaticResource copy}" />
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Opacity" Value="1" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Opacity" Value="0.6" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+
+                            <Border x:Name="__popup_bottom_copy"
+                                    VerticalAlignment="Top"
+                                    Background="Transparent"
+                                    Margin="{Binding CopyTranslatedTextMargin, Mode=TwoWay}"
+                                    Height="{Binding CopyTextHeigth, Mode=TwoWay}"
+                                    Grid.Column="0" Grid.Row="2">
+                                <Path Stretch="Uniform"
+                                      Fill="#5F6368"
+                                      Data="{StaticResource copy}" />
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Opacity" Value="1" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Opacity" Value="0.6" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
+
+                            <WrapPanel Grid.Column="1" Grid.Row="0">
+                                <TextBlock x:Name="__popup_top_text"
+                                           TextWrapping="Wrap"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           Foreground="#E5E5E5"
+                                           FontSize="{Binding FontSize, Mode=TwoWay}"
+                                           FontFamily="Verdana">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Opacity" Value="1" />
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <Setter Property="Opacity" Value="0.6" />
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
+                                                        <Condition Binding="{Binding Play, Mode=OneWay}" Value="False" />
+                                                        <Condition Binding="{Binding AddPronunciation, Mode=OneWay}" Value="True" />
+                                                        <Condition Binding="{Binding UseTranslator, Mode=OneWay}" Value="True" />
+                                                    </MultiDataTrigger.Conditions>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </WrapPanel>
+
+                            <WrapPanel Grid.Column="1" Grid.Row="2">
+                                <TextBlock x:Name="__popup_bottom_text"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           TextWrapping="Wrap"
+                                           FontSize="{Binding SmallFontSize, Mode=TwoWay}"
+                                           Foreground="#5F6368"
+                                           FontFamily="Verdana" />
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Background="Transparent" Margin="0 0 0 -1">
+                        <Polygon x:Name="__popup_part_of_border"
+                                 Fill="#202124"
+                                 Stroke="#5F6368"
+                                 HorizontalAlignment="Center"
+                                 StrokeThickness="1">
+                            <Polygon.Points>
+                                <Point X="0" Y="7" />
+                                <Point X="14" Y="7" />
+                                <Point X="7" Y="0" />
+                            </Polygon.Points>
+                        </Polygon>
+                    </Border>
+                </Grid>
+            </Popup>
+
+            <Popup Placement="MousePoint"
+                   VerticalOffset="-21"
+                   HorizontalOffset="-18"
+                   StaysOpen="False"
+                   IsOpen="{Binding IsCancelPopupOpened, Mode=TwoWay}"
+                   PopupAnimation="None"
+                   AllowsTransparency="True">
+                <Border Style="{StaticResource borderOpacity}"
+                        Background="Transparent"
+                        Width="24" Height="24">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding OnCancelPopupClickedCommand}"
+                                                   PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <Path Data="{StaticResource cancel}"
+                          Width="12" Height="12"
+                          IsHitTestVisible="False"
+                          Stretch="Uniform"
+                          Fill="#70FF0000">
+                        <Path.Effect>
+                            <DropShadowEffect Color="#90FF0000"
+                                              ShadowDepth="0"
+                                              BlurRadius="4" />
+                        </Path.Effect>
+                    </Path>
+                </Border>
+            </Popup>
+            
+            <Border Width="24" Height="24"
+                    ToolTip="Focus mode"
+                    Background="Transparent"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Right">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Opacity" Value="0.3" />
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.15" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDown">
+                        <i:InvokeCommandAction Command="{Binding OnFocusModeClickedCommand}"
+                                               PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                    <i:EventTrigger EventName="Loaded">
+                        <i:InvokeCommandAction Command="{Binding OnFocusModeLoadedCommand}"
+                                               PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Path Data="{StaticResource focus}"
+                      Stretch="Uniform"
+                      Width="12" Height="12"
+                      IsHitTestVisible="False"
+                      Fill="#4B4C52" />
+            </Border>
+        </Grid>
+
+        <Border Name="moveContainer" Grid.Row="1"
+                VerticalAlignment="Bottom"
+                MouseEnter="OnMoveMouseEnter"
+                MouseLeave="OnMoveMouseLeave"
+                Height="60"
+                Background="Transparent">
+            <comps:LiteSlider x:Name="__move_slider"
+                              IsEnabled="{Binding IsScrollLocked, Converter={StaticResource ReverseBoolean}, Mode=OneWay}"
+                              ValueChanged="OnMoveValueChanged"
+                              MinValue="0"
+                              MaxValue="0"
+                              UseInteger="True"
+                              Height="18"
+                              LazyLoading="True"
+                              AnimateHover="False"
+                              Margin="30 0" />
+        </Border>
+
+        <Grid Grid.Row="0" Background="#35363A">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock MouseUp="OnFileOpened"
+                           Style="{StaticResource topNameStyleUnderline}"
+                           Margin="6 0 4 0"
+                           Text="File" />
+                <TextBlock MouseUp="OnEdited"
+                           Style="{StaticResource topNameStyleUnderline}"
+                           Text="Edit" />
+                <TextBlock MouseUp="OnInfoShowed"
+                           Style="{StaticResource topNameStyleUnderline}"
+                           Text="Info" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal"
+                        Grid.Column="2">
+                <Border Name="__copy_capture_page"
+                        Width="24" Height="24"
+                        ToolTip="Copy read progress"
+                        Background="Transparent"
+                        MouseUp="OnCapturePageInfoCopied">
+                    <Path Fill="#4B4C52"
+                          Width="12" Height="12"
+                          Data="{StaticResource copy}"
+                          Stretch="Uniform" />
+                </Border>
+                <TextBlock Name="__capture_pages"
+                           FontSize="12"
+                           Margin="0 0 2 0"
+                           Text="-"
+                           Style="{StaticResource bottomNameStyleUnderline}" />
+                <Border Background="Transparent"
+                        Style="{StaticResource borderOpacity}"
+                        Width="24" Height="24"
+                        ToolTip="Bookmark"
+                        Margin="0 0 2 0">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding OnBookmarkClickedCommand}"
+                                                   PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <Path IsHitTestVisible="False"
+                          Width="13" Height="13"
+                          Stretch="Uniform"
+                          Data="{StaticResource bookmark}">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="#4B4C52" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsBookmarkSaved, Mode=OneWay}" Value="True">
+                                        <Setter Property="Fill" Value="#929292" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                </Border>
+            </StackPanel>
+
+            <Border Width="24" Height="24"
+                    Style="{StaticResource borderOpacity}"
+                    Background="Transparent"
+                    Grid.ColumnSpan="3"
+                    ToolTip="Lock scroll"
+                    HorizontalAlignment="Center">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDown">
+                        <i:InvokeCommandAction Command="{Binding OnLockScrollClickedCommand}"
+                                               PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Path Data="{StaticResource lock}"
+                      IsHitTestVisible="False"
+                      Width="14" Height="14"
+                      Stretch="Uniform">
+                    <Path.Style>
+                        <Style TargetType="Path">
+                            <Setter Property="Fill" Value="#4B4C52" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsScrollLocked, Mode=OneWay}" Value="True">
+                                    <Setter Property="Fill" Value="#929292" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Path.Style>
+                </Path>
+            </Border>
+        </Grid>
+
+        <Border Name="settingsContainer" Grid.Row="1"
+                Height="300"
+                CornerRadius="12 12 0 0"
+                BorderThickness="0 1 0 0"
+                BorderBrush="#5F6368"
+                VerticalAlignment="Bottom"
+                Background="#35363A">
+            <Border.RenderTransform>
+                <TranslateTransform Y="300" />
+            </Border.RenderTransform>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="36" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Name="__general"
+                               Style="{StaticResource optionsNameStyleUnderline}"
+                               Text="General"
+                               Grid.Column="0"
+                               Foreground="#92E492"
+                               Margin="18 0 10 0"/>
+                    <TextBlock Name="__translator"
+                               Style="{StaticResource optionsNameStyleUnderline}"
+                               Text="Translator"
+                               Grid.Column="1"/>
+                    <TextBlock Name="__font_style"
+                               Style="{StaticResource optionsNameStyleUnderline}"
+                               Text="Font style"
+                               Grid.Column="2" />
+                    <TextBlock Name="__text_margin"
+                               Style="{StaticResource optionsNameStyleUnderline}"
+                               Text="Text margin"
+                               Grid.Column="3" />
+                    <TextBlock Name="__text_spacing"
+                               Style="{StaticResource optionsNameStyleUnderline}"
+                               Text="Text spacing"
+                               Grid.Column="4" />
+                    <TextBlock Name="__color_set_1"
+                               Style="{StaticResource optionsNameStyleUnderline}"
+                               Text="Color set 1"
+                               Foreground="#E5E5E5"
+                               Grid.Column="6" />
+                    <TextBlock Name="__color_set_2"
+                               Style="{StaticResource optionsNameStyleUnderline}"
+                               Text="Color set 2"
+                               Grid.Column="7"
+                               Margin="9 0 18 0" />
+
+                    <Border Grid.Column="0"
+                            Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="1"
+                            Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="2"
+                            Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="3"
+                            Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="4"
+                            Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="5"
+                            Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="6"
+                            Style="{StaticResource separatorBorder}" />
+                    
+                </Grid>
+
+                <Border Background="#5F6368"
+                        Height="1"
+                        CornerRadius="15"
+                        Grid.Row="1"
+                        Margin="4 0"
+                        VerticalAlignment="Top" />
+
+                <Grid Margin="12" Grid.Row="1">
+                    <Grid Name="__general_grid" Visibility="Visible">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                            
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Logo Preview"
+                                   Grid.Column="1"
+                                   Style="{StaticResource optionsNameStyle}" />
+
+                        <TextBlock Text="Adaptive Word Spacing"
+                                   Style="{StaticResource optionsNameStyle}"
+                                   Grid.Row="1"
+                                   Grid.Column="1" />
+
+                        <TextBlock Text="Adaptive Kerning"
+                                   Style="{StaticResource optionsNameStyle}"
+                                   Grid.Row="2"
+                                   Grid.Column="1" />
+
+                        <TextBlock Text="Auto Copy Selected Text"
+                                   Style="{StaticResource optionsNameStyle}"
+                                   Grid.Row="3"
+                                   Grid.Column="1" />
+
+                        <comps:LiteCheckBox x:Name="__logoPreview"
+                                            CheckedValueChanged="OnLogoPreviewValueChanged"
+                                            HorizontalAlignment="Left"
+                                            Grid.Row="0"
+                                            Height="30"
+                                            Width="40" />
+
+                        <comps:LiteCheckBox x:Name="__adaptiveWordSpacing"
+                                            CheckedValueChanged="OnAdaptiveWordSpacingValueChanged"
+                                            Grid.Row="1"
+                                            HorizontalAlignment="Left"
+                                            Height="30"
+                                            Width="40" />
+
+                        <comps:LiteCheckBox x:Name="__adaptiveKerning"
+                                            CheckedValueChanged="OnAdaptiveKerningValueChanged"
+                                            Grid.Row="2"
+                                            HorizontalAlignment="Left"
+                                            Height="30"
+                                            Width="40" />
+
+                        <comps:LiteCheckBox x:Name="__autoCopySelectedText"
+                                            CheckedValueChanged="OnAutoCopySelectedTextValueChanged"
+                                            Grid.Row="3"
+                                            HorizontalAlignment="Left"
+                                            Height="30"
+                                            Width="40" />
+                    </Grid>
+
+                    <Grid Name="__translator_grid" Visibility="Hidden">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Use Translator"
+                                   Grid.Column="1"
+                                   Style="{StaticResource optionsNameStyle}" />
+
+                        <TextBlock Text="Use Google Translate"
+                                   Style="{StaticResource optionsNameStyle}"
+                                   Grid.Row="1"
+                                   Grid.Column="1" />
+
+                        <TextBlock Text="Use Spell Checker"
+                                   Style="{StaticResource optionsNameStyle}"
+                                   Grid.Row="2"
+                                   Grid.Column="1" />
+
+                        <TextBlock Text="Add Pronunciation"
+                                   Style="{StaticResource optionsNameStyle}"
+                                   Grid.Row="3"
+                                   Grid.Column="1" />
+
+                        <TextBlock Text="Show Synonyms"
+                                   Style="{StaticResource optionsNameStyle}"
+                                   Grid.Row="4"
+                                   Grid.Column="1" />
+
+                        <comps:LiteCheckBox x:Name="__useTranslator"
+                                            CheckedValueChanged="OnUseTranslatorValueChanged"
+                                            Grid.Column="0"
+                                            HorizontalAlignment="Left"
+                                            Height="30"
+                                            Width="40" />
+
+                        <comps:LiteCheckBox x:Name="__useGoogleTranslate"
+                                            CheckedValueChanged="OnUseGoogleTranslateValueChanged"
+                                            Grid.Column="0"
+                                            Grid.Row="1"
+                                            HorizontalAlignment="Left"
+                                            Height="30"
+                                            Width="40" />
+
+                        <comps:LiteCheckBox x:Name="__useSpellChecker"
+                                            CheckedValueChanged="OnUseSpellCheckerValueChanged"
+                                            Grid.Column="0"
+                                            Grid.Row="2"
+                                            HorizontalAlignment="Left"
+                                            Height="30"
+                                            Width="40" />
+
+                        <comps:LiteCheckBox x:Name="__addPronunciation"
+                                            CheckedValueChanged="OnAddPronunciationValueChanged"
+                                            Grid.Column="0"
+                                            Grid.Row="3"
+                                            HorizontalAlignment="Left"
+                                            Height="30"
+                                            Width="40" />
+
+                        <comps:LiteCheckBox x:Name="__showSynonyms"
+                                            CheckedValueChanged="OnShowSynonymsValueChanged"
+                                            Grid.Column="0"
+                                            Grid.Row="4"
+                                            HorizontalAlignment="Left"
+                                            Height="30"
+                                            Width="40" />
+                    </Grid>
+                    
+                    <Grid Name="__font_style_grid" Visibility="Hidden">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock MouseUp="OnTextStyleReset"
+                                   Text="Reset Font style"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Top"
+                                   Style="{StaticResource optionsNameStyleUnderline}"/>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <comps:LiteSlider x:Name="__fontSize"
+                                              ValueChanged="OnFontSizeChanged"
+                                              Width="320"
+                                              MinValue="1"
+                                              MaxValue="100"
+                                              UseInteger="True" />
+                            <TextBlock Text="Font Size"
+                                       Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <ComboBox x:Name="__fontFamily"
+                                      Width="160"
+                                      SelectionChanged="OnFontFamilyChanged" />
+                            <TextBlock Text="Font Family"
+                                       Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <ComboBox x:Name="__fontWeight"
+                                      Width="160"
+                                      SelectionChanged="OnFontWeightChanged" />
+                            <TextBlock Text="Font Weight"
+                                       Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Name="__text_margin_grid" Visibility="Hidden">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock MouseUp="OnTextMarginReset"
+                                   Text="Reset Font margin"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Top"
+                                   Style="{StaticResource optionsNameStyleUnderline}"/>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <comps:LiteSlider x:Name="__leftRightOffset"
+                                              ValueChanged="OnLeftRightOffsetChanged"
+                                              MinValue="0"
+                                              Width="320"
+                                              Step="5"
+                                              MaxValue="800"
+                                              UseInteger="True" />
+                            <TextBlock Text="Left And Right Offset"
+                                       Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <comps:LiteSlider x:Name="__horizontalOffset"
+                                              ValueChanged="OnHorizontalOffsetChanged"
+                                              MinValue="-800"
+                                              Width="320"
+                                              Step="10"
+                                              MaxValue="800"
+                                              UseInteger="True" />
+                            <TextBlock Text="Horizontal Offset"
+                                       Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <comps:LiteSlider x:Name="__verticalOffset"
+                                              ValueChanged="OnVerticalOffsetChanged"
+                                              MinValue="-800"
+                                              Width="320"
+                                              Step="10"
+                                              MaxValue="800"
+                                              UseInteger="True" />
+                            <TextBlock Text="Vertical Offset"
+                                       Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Name="__text_spacing_grid" Visibility="Hidden">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock MouseUp="OnTextSpacingReset"
+                                   Text="Reset Font spacing"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Top"
+                                   Style="{StaticResource optionsNameStyleUnderline}"/>
+
+                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                            <comps:LiteSlider x:Name="__indent"
+                                              ValueChanged="OnIndentChanged"
+                                              MinValue="0"
+                                              Width="320"
+                                              Step="0.1"
+                                              MaxValue="150"
+                                              UseInteger="False" />
+                            <TextBlock Text="Indent"
+                                       Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
+                            <comps:LiteSlider x:Name="__kerning"
+                                              ValueChanged="OnKerningChanged"
+                                              MinValue="-10"
+                                              Width="320"
+                                              LazyLoading="True"
+                                              MaxValue="60"
+                                              Step="0.1"
+                                              UseInteger="False" />
+                            <TextBlock Text="Kerning"
+                                       Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <comps:LiteSlider x:Name="__wordSpacing"
+                                              ValueChanged="OnWordSpacingChanged"
+                                              MinValue="0"
+                                              Width="320"
+                                              MaxValue="120"
+                                              Step="0.1"
+                                              UseInteger="False" />
+                            <TextBlock Text="Word Spacing"
+                                       Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="3" Orientation="Horizontal">
+                            <comps:LiteSlider x:Name="__lineSpacing"
+                                              ValueChanged="OnLineSpacingChanged"
+                                              MinValue="0"
+                                              Width="320"
+                                              MaxValue="120"
+                                              Step="0.1"
+                                              UseInteger="False" />
+                            <TextBlock Text="Line Spacing"
+                                       Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Name="__color_set_grid" Visibility="Hidden">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="42" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel VerticalAlignment="Top"
+                                    HorizontalAlignment="Right"
+                                    Grid.RowSpan="2">
+                            <TextBlock MouseUp="OnColorSetReset"
+                                       Text="Reset Color set"
+                                       Margin="0"
+                                       HorizontalAlignment="Stretch"
+                                       TextAlignment="Right"
+                                       Style="{StaticResource optionsNameStyleUnderline}"/>
+                            <TextBlock MouseUp="OnColorSetSave"
+                                       Text="Save Color set"
+                                       Margin="0 15 0 0"
+                                       HorizontalAlignment="Stretch"
+                                       TextAlignment="Right"
+                                       Style="{StaticResource optionsNameStyleUnderline}"/>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal" Grid.RowSpan="2">
+                            <StackPanel Orientation="Horizontal">
+                                <comps:LiteColorPicker x:Name="__background"
+                                                       SelecteColorChanged="OnBackgroundColorChanged"
+                                                       Height="30" Width="80" />
+                                <TextBlock Text="Background"
+                                           Style="{StaticResource optionsNameStyle}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Margin="30 0">
+                                <comps:LiteColorPicker x:Name="__foreground"
+                                                       SelecteColorChanged="OnForegroundColorChanged"
+                                                       Height="30" Width="80" />
+                                <TextBlock Text="Text Color"
+                                           Style="{StaticResource optionsNameStyle}" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal">
+                                <comps:LiteColorPicker x:Name="__selectedForeground"
+                                                       SelecteColorChanged="OnSelectedForegroundColorChanged"
+                                                       Height="30" Width="80" />
+                                <TextBlock Text="Selected Text Color"
+                                           Style="{StaticResource optionsNameStyle}" />
+                            </StackPanel>
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal" Grid.Row="2">
+                            <comps:LiteSlider x:Name="__hoveredTextTransparency"
+                                              ValueChanged="OnHoveredTextTransparencyChanged"
+                                              MinValue="0"
+                                              Width="320"
+                                              Step="0.01"
+                                              MaxValue="1"
+                                              UseInteger="False" />
+                            <TextBlock Text="Hovered Text Transparency"
+                                        Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="3">
+                            <comps:LiteSlider x:Name="__inactiveTextTransparency"
+                                              ValueChanged="OnInactiveTextTransparencyChanged"
+                                              MinValue="0"
+                                              Width="320"
+                                              Step="0.01"
+                                              MaxValue="1"
+                                              UseInteger="False" />
+                            <TextBlock Text="Inactive Text Transparency"
+                                        Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+               
+            </Grid>
+        </Border>
+        
+        <Grid Grid.Row="3" Background="#35363A">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal">
+                <Border Width="24" Height="24"
+                        ToolTip="Settings"
+                        Name="__setting_book"
+                        MouseUp="OnSettingsBookClicked"
+                        Background="Transparent">
+                    <Path Fill="#4B4C52"
+                          Width="12" Height="12"
+                          Data="{StaticResource settings}"
+                          Stretch="Uniform" />
+                </Border>
+
+                <Border Width="24" Height="24"
+                        Name="__copy_book_path"
+                        ToolTip="Copy file path"
+                        MouseUp="OnBookPathCopied"
+                        Background="Transparent">
+                    <Path Fill="#4B4C52"
+                          Width="12" Height="12"
+                          Data="{StaticResource copy}"
+                          Stretch="Uniform" />
+                </Border>
+            </StackPanel>
+
+            <TextBlock Name="fileNameContainer"
+                       Grid.Column="1"
+                       Margin="4 0"
+                       TextTrimming="CharacterEllipsis"
+                       ToolTip="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"
+                       Style="{StaticResource bottomNameStyleUnderline}"
+                       FontSize="12"
+                       Text="C:\" />
+            
+            <StackPanel Grid.Column="2"
+                        Orientation="Horizontal">
+                <Border Width="24" Height="24"
+                        Name="__copy_book_page"
+                        ToolTip="Copy book progress"
+                        Background="Transparent"
+                        MouseUp="OnPageInfoCopied">
+                    <Path Fill="#4B4C52"
+                          Width="12" Height="12"
+                          Data="{StaticResource copy}"
+                          Stretch="Uniform" />
+                </Border>
+                <TextBlock Name="filePageContainer"
+                           FontSize="12"
+                           TextAlignment="Center"
+                           Margin="0 0 2 0"
+                           Style="{StaticResource bottomNameStyleUnderline}"
+                           Text="page 0 (0%)" />
+                <Border Width="24" Height="24"
+                        ToolTip="Page turner"
+                        Background="Transparent"
+                        Name="__lock_page_turner"
+                        MouseUp="OnPageTurnerLocked">
+                    <Path Fill="#4B4C52"
+                          Width="16" Height="16"
+                          Stretch="Uniform"
+                          Data="{StaticResource lock-off}" />
+                </Border>
+            </StackPanel>
+            
+            <TextBlock Name="sizeContainer"
+                       Grid.Column="3"
+                       TextTrimming="CharacterEllipsis"
+                       TextAlignment="Right"
+                       FontSize="12"
+                       Style="{StaticResource bottomNameStyleUnderline}"
+                       Text="1920x1080"/>
+        </Grid>
+
+        <Grid Name="__temp_logo_border" Grid.RowSpan="3"
+              Background="Black"
+              Visibility="Visible">
+
+            <StackPanel Orientation="Vertical"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <TextBlock Name="__temp_logo_path"
+                           VerticalAlignment="Center"
+                           TextAlignment="Center"
+                           FontFamily="OpineHeavy Regular"
+                           Grid.Row="1"
+                           FontSize="90"
+                           Text="FLEX WORDS">
+                    <TextBlock.Foreground>
+                        <LinearGradientBrush StartPoint="1 0" EndPoint="0 0">
+                            <GradientStop x:Name="__stop_1" Color="black" Offset="1.0" />
+                            <GradientStop x:Name="__stop_2" Color="#E5E5E5" Offset="1.1" />
+                            <GradientStop x:Name="__stop_3" Color="black" Offset="1.2" />
+                        </LinearGradientBrush>
+                    </TextBlock.Foreground>
+                </TextBlock>
+
+                <TextBlock Name="__temp_logo_name"
+                           HorizontalAlignment="Right"
+                           Grid.Row="3"
+                           Margin="0 -50 50 0"
+                           FontSize="32"
+                           Foreground="#E5E5E5"
+                           Opacity="0"
+                           FontWeight="Bold"
+                           Text=".txt Edititon" />
+            </StackPanel>
+        </Grid>
+    </Grid>
+    
+</Window>

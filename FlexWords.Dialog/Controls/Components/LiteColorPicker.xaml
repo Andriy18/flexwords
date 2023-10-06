@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="FlexWords.Dialog.Controls.Components.LiteColorPicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FlexWords.Dialog.Controls.Components"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             mc:Ignorable="d"
+             Background="Transparent"
+             Height="50"
+             Width="200"
+             Loaded="OnLiteColorPickerLoaded">
+    <Border Name="__border"
+            BorderBrush="#E5E5E5"
+            Background="#242424"
+            BorderThickness="1"
+            CornerRadius="25"
+            Padding="2">
+        <Grid>
+            <xctk:ColorPicker Name="__color_picker"
+                              SelectedColorChanged="OnSelectedColorChanged"
+                              ColorMode="ColorCanvas"
+                              Visibility="Hidden" />
+
+            <Border Name="__internal_border"
+                    CornerRadius="22">
+                <Border Name="__main_border"
+                        CornerRadius="22"
+                        BorderThickness="0"
+                        Background="#35363A">
+                    <TextBlock x:Name="__text"
+                               FontFamily="Verdana"
+                               FontWeight="Bold"
+                               FontSize="23"
+                               Foreground="#E5E5E5"
+                               TextAlignment="Center"
+                               VerticalAlignment="Center">
+                        #343434
+                    </TextBlock>
+                </Border>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

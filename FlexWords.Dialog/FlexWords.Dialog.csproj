@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FlexWords.Constants\FlexWords.Constants.csproj" />
+    <ProjectReference Include="..\FlexWords.Entities\FlexWords.Entities.csproj" />
+    <ProjectReference Include="..\FlexWords.Extensions\FlexWords.Extensions.csproj" />
+    <ProjectReference Include="..\FlexWords.Helpers\FlexWords.Helpers.csproj" />
+    <ProjectReference Include="..\FlexWords.Translator\FlexWords.Translator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Settings\GeneralOptions.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>GeneralOptions.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Settings\GeneralOptions.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>GeneralOptions.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="xcopy /Y /S &quot;$(SolutionDir)third-party\ReversoAPI.1.3.1\HtmlAgilityPack.dll&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;xcopy /Y /S &quot;$(SolutionDir)third-party\ReversoAPI.1.3.1\Polly.dll&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;xcopy /Y /S &quot;$(SolutionDir)third-party\ReversoAPI.1.3.1\ReversoAPI.Web.dll&quot; &quot;$(TargetDir)&quot;" />
+  </Target>
+
+</Project>
