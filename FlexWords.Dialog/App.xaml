@@ -41,16 +41,6 @@
             M15.1,17.5.5,2.9A1.7,1.7,0,0,1,1.7,0H16.3A1.7,1.7,0,0,1,18,1.7V16.3A1.7,1.7,0,0,1,15.1,17.5Z
         </StreamGeometry>
 
-        <SolidColorBrush x:Key="ForeBrush" Color="{DynamicResource foreColor}" />
-        <SolidColorBrush x:Key="ConfirmBrush" Color="{DynamicResource confirmColor}" />
-        <SolidColorBrush x:Key="BackBrush" Color="{DynamicResource backColor}" />
-        <SolidColorBrush x:Key="LightBackBrush" Color="{DynamicResource lightBackColor}" />
-
-        <Color x:Key="foreColor" >#545454</Color>
-        <Color x:Key="confirmColor" >#92E492</Color>
-        <Color x:Key="backColor" >#242424</Color>
-        <Color x:Key="lightBackColor" >#2E2E2E</Color>
-
         <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
             <Grid>
                 <Grid.ColumnDefinitions>
