@@ -113,6 +113,11 @@ namespace FlexWords.Extensions
             return result;
         }
 
+        public static float GetTotalPagesCount(this BookParagraph paragraph)
+        {
+            return paragraph.TotalPages + paragraph.CurrentPageInterest;
+        }
+
         public static IReadOnlyList<WordItem> CurrentWords(this Book book)
         {
             BookParagraph current = book.Paragraphs[book.Bkmark.paragraph];

@@ -13,6 +13,7 @@ using FlexWords.Dialog.Controls.UserDialogs;
 using FlexWords.Dialog.Extensions;
 using FlexWords.Dialog.Helpers;
 using FlexWords.Dialog.ViewModels;
+using FlexWords.Entities.Structs;
 
 namespace FlexWords.Dialog.Controls
 {
@@ -185,10 +186,10 @@ namespace FlexWords.Dialog.Controls
 
                 if (value < float.Epsilon)
                 {
-                    float current = GetCurrentParagraph().TotalPages;
-                    int page = _openedBook.Paragraphs[Options.CaptureBkmark.Value.paragraph].TotalPages;
+                    float currentPages = GetCurrentParagraph().GetTotalPagesCount();
+                    float pages = _openedBook.Paragraphs[Options.CaptureBkmark.Value.paragraph].GetTotalPagesCount();
 
-                    __capture_pages.Text = $"turn {Math.Clamp(page - current, 1, page)} pages forward";
+                    __capture_pages.Text = $"turn {pages - currentPages:f2} pages forward";
                 }
                 else
                 {
@@ -311,7 +312,7 @@ namespace FlexWords.Dialog.Controls
         {
             if (_openedBook is null) return;
 
-            Options.CaptureBkmark = _openedBook.Bkmark;
+            Options.CaptureBkmark = new Bookmark(_openedBook.Bkmark.paragraph, 0);
         }
     }
 }

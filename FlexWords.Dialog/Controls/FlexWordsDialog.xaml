@@ -408,7 +408,7 @@
                 <TextBlock Name="__capture_pages"
                            FontSize="12"
                            Margin="0 0 2 0"
-                           Text="-"
+                           Text="no bookmark"
                            Style="{StaticResource bottomNameStyleUnderline}" />
                 <Border Background="Transparent"
                         Style="{StaticResource borderOpacity}"
@@ -1016,7 +1016,7 @@
 
         <Grid Name="__temp_logo_border" Grid.RowSpan="3"
               Background="Black"
-              Visibility="Visible">
+              Visibility="Hidden">
 
             <StackPanel Orientation="Vertical"
                         VerticalAlignment="Center"
