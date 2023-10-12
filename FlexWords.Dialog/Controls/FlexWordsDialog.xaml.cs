@@ -35,7 +35,6 @@ namespace FlexWords.Dialog.Controls
         {
             InitializeDpi();
             ThemeApplier.UpdateTitleBar(this, true);
-            ApplyLogoIcon();
             InitializeSettings();
             InitializeButtons();
 

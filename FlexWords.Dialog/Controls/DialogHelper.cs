@@ -6,8 +6,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Media;
 using System.Windows.Threading;
 using FlexWords.Dialog.Extensions;
-using FlexWords.Dialog.Helpers;
-using System.Windows.Media.Imaging;
 using System.Reflection;
 using System.Diagnostics;
 
@@ -34,8 +32,8 @@ namespace FlexWords.Dialog.Controls
                     __stop_3.BeginAnimation(GradientStop.OffsetProperty, animation3);
 
                     await Task.Delay(3500);
-                    Brush brush = "#E5E5E5".ToBrush();//#E5E5E5"
-                    brush.Opacity = 0.0; //0.0
+                    Brush brush = "#E5E5E5".ToBrush();
+                    brush.Opacity = 0.0;
                     __temp_logo_path.Foreground = brush;
                     var animation4 = new DoubleAnimation(1.0, TimeSpan.FromSeconds(1.5));
                     animation4.EasingFunction = new BounceEase { EasingMode = EasingMode.EaseIn };
@@ -53,29 +51,6 @@ namespace FlexWords.Dialog.Controls
                 await Task.Delay(1500);
                 __grid.Children.Remove(__temp_logo_border);
             }, DispatcherPriority.Send);
-        }
-
-        private void ApplyLogoIcon()
-        {
-            StreamGeometry streamGeometry = ((StreamGeometry)Application.Current.Resources["logo"]).Clone();
-
-            streamGeometry.Transform = new TransformGroup()
-            {
-                Children = { new ScaleTransform(1.2, 1.2), new TranslateTransform(1, 9) }
-            };
-
-            var drawingVisual = new DrawingVisual();
-
-            using (DrawingContext drawingContext = drawingVisual.RenderOpen())
-            {
-                drawingContext.DrawRoundedRectangle("#202124".ToBrush(), null, new Rect(0, 0, 32, 32), 6, 6);
-                drawingContext.DrawGeometry("#35363A".ToBrush(), null, streamGeometry);
-            }
-
-            var renderTargetBitmap = new RenderTargetBitmap(32, 32, 96, 96, PixelFormats.Pbgra32);
-            renderTargetBitmap.Render(drawingVisual);
-
-            Icon = MeasureHelper.ToBitmapImage(renderTargetBitmap, 32, 32);
         }
 
         public void InitializeDpi()
