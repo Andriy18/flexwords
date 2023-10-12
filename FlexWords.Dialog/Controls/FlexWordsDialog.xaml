@@ -992,7 +992,7 @@
                            TextAlignment="Center"
                            Margin="0 0 2 0"
                            Style="{StaticResource bottomNameStyleUnderline}"
-                           Text="page 0 (0%)" />
+                           Text="page 0 (0%) -" />
                 <Border Width="24" Height="24"
                         ToolTip="Page turner"
                         Background="Transparent"
@@ -1016,7 +1016,7 @@
 
         <Grid Name="__temp_logo_border" Grid.RowSpan="3"
               Background="Black"
-              Visibility="Hidden">
+              Visibility="Visible">
 
             <StackPanel Orientation="Vertical"
                         VerticalAlignment="Center"

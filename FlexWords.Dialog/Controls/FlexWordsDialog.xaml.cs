@@ -170,8 +170,7 @@ namespace FlexWords.Dialog.Controls
             if (_openedBook is null) return;
 
             BookParagraph paragraph = GetCurrentParagraph();
-
-            filePageContainer.Text = $"page {paragraph.TotalPages}/{(int)_openedBook.PageCount} ({paragraph.CurrentPageInterest * 100f:f0}%)";
+            filePageContainer.Text = $"page {paragraph.TotalPages}/{(int)_openedBook.PageCount} ({paragraph.CurrentPageInterest * 100f:f0}%) {paragraph.Chapter.Title}";
 
             UpdateCaptureBookmarkView();
         }
