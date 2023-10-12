@@ -749,12 +749,12 @@
                                    Style="{StaticResource optionsNameStyleUnderline}"/>
 
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <comps:LiteSlider x:Name="__leftRightOffset"
-                                              ValueChanged="OnLeftRightOffsetChanged"
-                                              MinValue="0"
+                            <comps:LiteSlider x:Name="__areaWidth"
+                                              ValueChanged="OnAreaWidthChanged"
+                                              MinValue="20"
                                               Width="320"
-                                              Step="5"
-                                              MaxValue="800"
+                                              Step="10"
+                                              MaxValue="1920"
                                               UseInteger="True" />
                             <TextBlock Text="Left And Right Offset"
                                        Style="{StaticResource optionsNameStyle}" />

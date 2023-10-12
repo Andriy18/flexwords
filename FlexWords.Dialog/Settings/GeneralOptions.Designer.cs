@@ -109,7 +109,7 @@ namespace FlexWords.Dialog.Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("21")]
         public double FontSize {
             get {
                 return ((double)(this["FontSize"]));
@@ -169,13 +169,13 @@ namespace FlexWords.Dialog.Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public double LeftRightOffset {
+        [global::System.Configuration.DefaultSettingValueAttribute("600")]
+        public double AreaWidth {
             get {
-                return ((double)(this["LeftRightOffset"]));
+                return ((double)(this["AreaWidth"]));
             }
             set {
-                this["LeftRightOffset"] = value;
+                this["AreaWidth"] = value;
             }
         }
         
@@ -193,7 +193,7 @@ namespace FlexWords.Dialog.Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("25")]
         public double WordSpacing {
             get {
                 return ((double)(this["WordSpacing"]));
@@ -205,7 +205,7 @@ namespace FlexWords.Dialog.Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
         public double LineSpacing {
             get {
                 return ((double)(this["LineSpacing"]));
@@ -217,7 +217,7 @@ namespace FlexWords.Dialog.Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("45")]
         public double Indent {
             get {
                 return ((double)(this["Indent"]));

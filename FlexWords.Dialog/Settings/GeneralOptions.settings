@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SuperReader.Dialog.Settings" GeneratedClassName="GeneralOptions">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="FlexWords.Dialog.Settings" GeneratedClassName="GeneralOptions">
   <Profiles />
   <Settings>
     <Setting Name="LastBookPath" Type="System.String" Scope="User">
@@ -24,7 +24,7 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="FontSize" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">21</Value>
     </Setting>
     <Setting Name="FontFamily" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
@@ -38,20 +38,20 @@
     <Setting Name="HorizontalOffset" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="LeftRightOffset" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
+    <Setting Name="AreaWidth" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">600</Value>
     </Setting>
     <Setting Name="Kerning" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="WordSpacing" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">25</Value>
     </Setting>
     <Setting Name="LineSpacing" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">20</Value>
     </Setting>
     <Setting Name="Indent" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">45</Value>
     </Setting>
     <Setting Name="SetDefaultValues" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

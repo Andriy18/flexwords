@@ -2,8 +2,6 @@
 using System.Globalization;
 using System.Windows.Media;
 using System.Windows;
-using System.IO;
-using System.Windows.Media.Imaging;
 
 namespace FlexWords.Dialog.Helpers
 {
@@ -53,32 +51,12 @@ namespace FlexWords.Dialog.Helpers
 
         public static Thickness GetMargin()
         {
-            double right = -Options.HorizontalOffset + Options.LeftRightOffset;
-            double left = Options.HorizontalOffset + Options.LeftRightOffset;
+            double right = -Options.HorizontalOffset;
+            double left = Options.HorizontalOffset;
             double top = -Options.VerticalOffset;
             double bottom = Options.VerticalOffset;
 
             return new Thickness(left, top, right, bottom);
-        }
-
-        public static BitmapImage ToBitmapImage(RenderTargetBitmap render, int width, int height)
-        {
-            var bitmapImage = new BitmapImage();
-            using (var stream = new MemoryStream())
-            {
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(render));
-                encoder.Save(stream);
-                stream.Seek(0, SeekOrigin.Begin);
-
-                bitmapImage.BeginInit();
-                bitmapImage.DecodePixelWidth = width;
-                bitmapImage.DecodePixelHeight = height;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = stream;
-                bitmapImage.EndInit();
-            }
-            return bitmapImage;
         }
     }
 }

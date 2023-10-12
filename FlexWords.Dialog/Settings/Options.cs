@@ -229,12 +229,12 @@ namespace FlexWords.Dialog
             }
         }
 
-        public static double LeftRightOffset
+        public static double AreaWidth
         {
-            get => GeneralOptions.Default.LeftRightOffset;
+            get => GeneralOptions.Default.AreaWidth;
             set
             {
-                GeneralOptions.Default.LeftRightOffset = value;
+                GeneralOptions.Default.AreaWidth = value;
                 GeneralOptions.Default.Save();
             }
         }
@@ -349,7 +349,7 @@ namespace FlexWords.Dialog
         {
             HorizontalOffset = 0;
             VerticalOffset = 0;
-            LeftRightOffset = 100;
+            AreaWidth = 600;
         }
 
         public static void SetDefault3()

@@ -48,7 +48,7 @@ namespace FlexWords.Dialog.Controls
             __fontWeight.SelectedIndex = Options.FontWeight;
 
             // 'Text margin' options
-            __leftRightOffset.Value = Options.LeftRightOffset;
+            __areaWidth.Value = Options.AreaWidth;
             __verticalOffset.Value = Options.VerticalOffset;
             __horizontalOffset.Value = Options.HorizontalOffset;
 
@@ -220,7 +220,7 @@ namespace FlexWords.Dialog.Controls
 
                 Options.SetDefault2();
 
-                __leftRightOffset.Value = Options.LeftRightOffset;
+                __areaWidth.Value = Options.AreaWidth;
                 __verticalOffset.Value = Options.VerticalOffset;
                 __horizontalOffset.Value = Options.HorizontalOffset;
             }
@@ -413,12 +413,12 @@ namespace FlexWords.Dialog.Controls
             Update(CurrentWorkspace);
         }
 
-        private void OnLeftRightOffsetChanged(object sender, RoutedEventArgs e)
+        private void OnAreaWidthChanged(object sender, RoutedEventArgs e)
         {
             if (_openedBook is null) return;
 
-            Options.LeftRightOffset = __leftRightOffset.Value;
-            textItemsContainer.Margin = MeasureHelper.GetMargin();
+            Options.AreaWidth = __areaWidth.Value;
+            textItemsContainer.Width = __areaWidth.Value;
             Reorder(CurrentWorkspace);
         }
 
