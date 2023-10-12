@@ -3,9 +3,6 @@ using GTranslatorAPI;
 
 namespace FlexWords.Translator.Handlers
 {
-    /// <summary>
-    /// https://github.com/franck-gaspoz/GTranslatorAPI/tree/main
-    /// </summary>
     internal class GoogleTranslationHandler : ITranslationHandler
     {
         private readonly GTranslatorAPIClient _client = new();

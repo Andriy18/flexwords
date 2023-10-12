@@ -9,11 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="dlls\Polly.dll" />
-    <None Remove="dlls\ReversoAPI.Web.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.54" />
@@ -31,11 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="dlls\Polly.dll" />
-    <Resource Include="dlls\ReversoAPI.Web.dll" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Settings\GeneralOptions.Designer.cs">
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
@@ -49,9 +39,5 @@
       <LastGenOutput>GeneralOptions.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="xcopy /Y /S &quot;$(ProjectDir)dlls\Polly.dll&quot; &quot;$(TargetDir)&quot;&#xD;&#xA;xcopy /Y /S &quot;$(ProjectDir)dlls\ReversoAPI.Web.dll&quot; &quot;$(TargetDir)&quot;" />
-  </Target>
 
 </Project>

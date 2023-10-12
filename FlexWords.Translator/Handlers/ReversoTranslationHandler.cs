@@ -3,9 +3,6 @@ using ReversoAPI;
 
 namespace FlexWords.Translator.Handlers
 {
-    /// <summary>
-    /// https://github.com/mtokar3v/ReversoAPI-NET
-    /// </summary>
     internal class ReversoTranslationHandler : ITranslationHandler
     {
         private readonly ReversoClient _reversoClient;
