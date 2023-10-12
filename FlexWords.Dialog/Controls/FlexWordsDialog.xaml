@@ -553,7 +553,7 @@
                         VerticalAlignment="Top" />
 
                 <Grid Margin="12" Grid.Row="1">
-                    <Grid Name="__general_grid" Visibility="Visible">
+                    <Grid Name="__general_grid" Visibility="Hidden">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
@@ -614,7 +614,7 @@
                                             Width="40" />
                     </Grid>
 
-                    <Grid Name="__translator_grid" Visibility="Hidden">
+                    <Grid Name="__translator_grid" Visibility="Visible">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
@@ -632,7 +632,8 @@
                                    Grid.Column="1"
                                    Style="{StaticResource optionsNameStyle}" />
 
-                        <TextBlock Text="Use Google Translate"
+                        <TextBlock Text="Using Reverso Translate"
+                                   Name="__translator_name"
                                    Style="{StaticResource optionsNameStyle}"
                                    Grid.Row="1"
                                    Grid.Column="1" />

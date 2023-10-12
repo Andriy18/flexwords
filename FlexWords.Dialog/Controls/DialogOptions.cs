@@ -332,6 +332,9 @@ namespace FlexWords.Dialog.Controls
 
             Options.UseGoogleTranslate = __useGoogleTranslate.Checked;
             Translator.UseGoogleTranslate = __useGoogleTranslate.Checked;
+            __translator_name.Text = __useGoogleTranslate.Checked
+                ? "Using Google Translate"
+                : "Using Reverso Translate";
         }
 
         private void OnUseSpellCheckerValueChanged(object sender, RoutedEventArgs e)
