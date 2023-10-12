@@ -8,6 +8,7 @@ using System.Windows.Threading;
 using FlexWords.Dialog.Extensions;
 using System.Reflection;
 using System.Diagnostics;
+using FlexWords.Dialog.Helpers;
 
 namespace FlexWords.Dialog.Controls
 {
@@ -80,6 +81,13 @@ namespace FlexWords.Dialog.Controls
                 FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
                 return fileVersionInfo.ProductVersion;
             }
+        }
+
+        public static double GetCurrentFontHeight()
+        {
+            string name = FontFamilyHelper.GetFontFamilyName(Options.FontFamily);
+
+            return MeasureHelper.GetFontHeight(Options.FontSize, name);
         }
     }
 }

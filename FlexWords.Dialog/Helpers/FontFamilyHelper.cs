@@ -28,6 +28,11 @@ namespace FlexWords.Dialog.Helpers
             return GetFontFamily(GetIndex(fontFamilyName));
         }
 
+        public static string GetFontFamilyName(int index)
+        {
+            return GetFontFamily(index).Source;
+        }
+
         public static FontFamily GetFontFamily(int index)
         {
             if (0 <= index && index < _all.Length)

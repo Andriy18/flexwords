@@ -299,7 +299,8 @@
                    AllowsTransparency="True">
                 <Border Style="{StaticResource borderOpacity}"
                         Background="Transparent"
-                        Width="24" Height="24">
+                        Width="{Binding CanclePopupSize, Mode=OneWay}"
+                        Height="{Binding CanclePopupSize, Mode=OneWay}">
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="MouseDown">
                             <i:InvokeCommandAction Command="{Binding OnCancelPopupClickedCommand}"
@@ -307,7 +308,8 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <Path Data="{StaticResource cancel}"
-                          Width="12" Height="12"
+                          Width="{Binding CanclePopupIconSize, Mode=OneWay}"
+                          Height="{Binding CanclePopupIconSize, Mode=OneWay}"
                           IsHitTestVisible="False"
                           Stretch="Uniform"
                           Fill="#70FF0000">
@@ -553,7 +555,7 @@
                         VerticalAlignment="Top" />
 
                 <Grid Margin="12" Grid.Row="1">
-                    <Grid Name="__general_grid" Visibility="Hidden">
+                    <Grid Name="__general_grid" Visibility="Visible">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
@@ -614,7 +616,7 @@
                                             Width="40" />
                     </Grid>
 
-                    <Grid Name="__translator_grid" Visibility="Visible">
+                    <Grid Name="__translator_grid" Visibility="Hidden">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />

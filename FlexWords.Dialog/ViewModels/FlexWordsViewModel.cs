@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
@@ -6,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlexWords.Dialog.Controls;
 using FlexWords.Dialog.Extensions;
+using FlexWords.Dialog.Helpers;
 
 namespace FlexWords.Dialog.ViewModels
 {
@@ -38,11 +40,21 @@ namespace FlexWords.Dialog.ViewModels
         public bool IsScrollLocked { get; set; }
         public bool FocusMode { get; set; }
         public bool IsBookmarkSaved { get; set; }
+        public double CanclePopupSize { get; set; }
+        public double CanclePopupIconSize { get; set; }
         public bool IsCancelPopupOpened
         {
             get => _isCancelPopupOpened;
             set
             {
+                if (value)
+                {
+                    CanclePopupSize = Math.Clamp(FlexWordsDialog.GetCurrentFontHeight() * 0.8, 12, double.MaxValue);
+                    CanclePopupIconSize = CanclePopupSize * 0.8;
+                    OnPropertyChanged(nameof(CanclePopupSize));
+                    OnPropertyChanged(nameof(CanclePopupIconSize));
+                }
+
                 SetProperty(ref  _isCancelPopupOpened, value);
 
                 _dialog.SelectedWordsFlickering(value);
