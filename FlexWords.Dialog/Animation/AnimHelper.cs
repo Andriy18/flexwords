@@ -3,8 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Animation;
 using System.Windows.Media;
-using System.Windows.Input;
-using System.Windows.Shapes;
 using System.Threading.Tasks;
 
 namespace FlexWords.Dialog.Animation
@@ -43,30 +41,6 @@ namespace FlexWords.Dialog.Animation
             {
                 text.MouseEnter -= OnTextHoverEnter;
                 text.MouseLeave -= OnTextHoverLeave;
-            };
-        }
-
-        public static Action GeometryOpacity(UIElement hoverBoundsElement, Shape shape)
-        {
-            hoverBoundsElement.MouseEnter += OnMouseEnter;
-            hoverBoundsElement.MouseLeave += OnMouseLeave;
-            
-            void OnMouseEnter(object sender, MouseEventArgs e)
-            {
-                var element = (UIElement)sender;
-                shape.Opacity = 0.62;
-            }
-
-            void OnMouseLeave(object sender, MouseEventArgs e)
-            {
-                var element = (UIElement)sender;
-                shape.Opacity = 1;
-            }
-
-            return () =>
-            {
-                hoverBoundsElement.MouseEnter -= OnMouseEnter;
-                hoverBoundsElement.MouseLeave -= OnMouseLeave;
             };
         }
 
@@ -116,20 +90,6 @@ namespace FlexWords.Dialog.Animation
             };
 
             element.BeginAnimation(UIElement.OpacityProperty, animation);
-        }
-
-        public static void DoubleFlashing(UIElement element)
-        {
-            element.Dispatcher.BeginInvoke(async (UIElement obj) =>
-            {
-                var animation = new DoubleAnimation(0, TS15);
-                obj.BeginAnimation(Brush.OpacityProperty, animation);
-
-                await Task.Delay(150);
-
-                animation = new DoubleAnimation(1, TS05);
-                obj.BeginAnimation(Brush.OpacityProperty, animation);
-            }, System.Windows.Threading.DispatcherPriority.Send, element);
         }
     }
 }

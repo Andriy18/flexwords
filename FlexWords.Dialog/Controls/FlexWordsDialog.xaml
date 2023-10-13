@@ -13,12 +13,13 @@
         Height="600" Width="900"
         Background="#202124"
         Loaded="OnWindowLoaded"
-        SizeChanged="OnSizeChanged"
         Closed="OnWindowClosed"
         d:DataContext="{d:DesignInstance d:Type=vm:FlexWordsViewModel}">
 
     <Window.Resources>
         <conv:ReverseBooleanConverter x:Key="ReverseBoolean" />
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+        <conv:IncludeMarginConverter x:Key="IncludeMargin" />
         
         <Style x:Key="inputStyle" TargetType="TextBox">
             <Setter Property="Background" Value="Transparent" />
@@ -75,11 +76,11 @@
                TargetType="TextBlock"
                BasedOn="{StaticResource baseUnderlineTextBlock}">
             <Setter Property="Foreground" Value="#4B4C52" />
-            <Setter Property="FontSize" Value="16" />
+            <Setter Property="FontSize" Value="19" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="FontFamily" Value="Verdana" />
-            <Setter Property="FontWeight" Value="Bold" />
-            <Setter Property="Margin" Value="4 0" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Margin" Value="8 0" />
         </Style>
 
         <Style x:Key="bottomNameStyleUnderline" TargetType="TextBlock">
@@ -106,7 +107,7 @@
             <RowDefinition>
                 <RowDefinition.Style>
                     <Style TargetType="RowDefinition">
-                        <Setter Property="Height" Value="24" />
+                        <Setter Property="Height" Value="36" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding FocusMode, Mode=OneWay}" Value="True">
                                 <Setter Property="Height" Value="0" />
@@ -119,7 +120,7 @@
             <RowDefinition>
                 <RowDefinition.Style>
                     <Style TargetType="RowDefinition">
-                        <Setter Property="Height" Value="24" />
+                        <Setter Property="Height" Value="36" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding FocusMode, Mode=OneWay}" Value="True">
                                 <Setter Property="Height" Value="0" />
@@ -355,22 +356,38 @@
             </Border>
         </Grid>
 
-        <Border Name="moveContainer" Grid.Row="1"
+        <Border Grid.Row="1"
                 VerticalAlignment="Bottom"
-                MouseEnter="OnMoveMouseEnter"
-                MouseLeave="OnMoveMouseLeave"
                 Height="60"
+                Visibility="{Binding IsPageTurnerShowed, Converter={StaticResource BooleanToVisibility}, Mode=OneWay}"
                 Background="Transparent">
-            <comps:LiteSlider x:Name="__move_slider"
-                              IsEnabled="{Binding IsScrollLocked, Converter={StaticResource ReverseBoolean}, Mode=OneWay}"
+            <comps:LiteSlider IsEnabled="{Binding IsScrollLocked, Converter={StaticResource ReverseBoolean}, Mode=OneWay}"
                               ValueChanged="OnMoveValueChanged"
                               MinValue="0"
-                              MaxValue="0"
+                              MaxValue="{Binding MaxPageTurnerValue, Mode=TwoWay}"
+                              Value="{Binding PageTurnerValue, Mode=TwoWay}"
                               UseInteger="True"
                               Height="18"
                               LazyLoading="True"
                               AnimateHover="False"
-                              Margin="30 0" />
+                              Margin="30 0">
+                <comps:LiteSlider.Width>
+                    <MultiBinding Converter="{StaticResource IncludeMargin}">
+                        <Binding Path="ActualWidth" RelativeSource="{RelativeSource FindAncestor, AncestorType=Border}" />
+                        <Binding Path="Margin" RelativeSource="{RelativeSource Self}" />
+                    </MultiBinding>
+                </comps:LiteSlider.Width>
+            </comps:LiteSlider>
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="Opacity" Value="0.05" />
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Opacity" Value="1" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
         </Border>
 
         <Grid Grid.Row="0" Background="#35363A">
@@ -383,7 +400,7 @@
             <StackPanel Orientation="Horizontal">
                 <TextBlock MouseUp="OnFileOpened"
                            Style="{StaticResource topNameStyleUnderline}"
-                           Margin="6 0 4 0"
+                           Margin="8 0 4 0"
                            Text="File" />
                 <TextBlock MouseUp="OnEdited"
                            Style="{StaticResource topNameStyleUnderline}"
@@ -395,24 +412,13 @@
 
             <StackPanel Orientation="Horizontal"
                         Grid.Column="2">
-                <Border Name="__copy_capture_page"
-                        Width="24" Height="24"
-                        ToolTip="Copy read progress"
-                        Background="Transparent"
-                        MouseUp="OnCapturePageInfoCopied">
-                    <Path Fill="#4B4C52"
-                          Width="12" Height="12"
-                          Data="{StaticResource copy}"
-                          Stretch="Uniform" />
-                </Border>
-                <TextBlock Name="__capture_pages"
-                           FontSize="12"
+                <TextBlock Text="{Binding BookmarkText, Mode=OneWay}"
+                           FontSize="19"
                            Margin="0 0 2 0"
-                           Text="no bookmark"
                            Style="{StaticResource bottomNameStyleUnderline}" />
                 <Border Background="Transparent"
                         Style="{StaticResource borderOpacity}"
-                        Width="24" Height="24"
+                        Width="36" Height="36"
                         ToolTip="Bookmark"
                         Margin="0 0 2 0">
                     <i:Interaction.Triggers>
@@ -422,7 +428,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <Path IsHitTestVisible="False"
-                          Width="13" Height="13"
+                          Width="22" Height="22"
                           Stretch="Uniform"
                           Data="{StaticResource bookmark}">
                         <Path.Style>
@@ -439,7 +445,7 @@
                 </Border>
             </StackPanel>
 
-            <Border Width="24" Height="24"
+            <Border Width="36" Height="36"
                     Style="{StaticResource borderOpacity}"
                     Background="Transparent"
                     Grid.ColumnSpan="3"
@@ -453,7 +459,7 @@
                 </i:Interaction.Triggers>
                 <Path Data="{StaticResource lock}"
                       IsHitTestVisible="False"
-                      Width="14" Height="14"
+                      Width="22" Height="22"
                       Stretch="Uniform">
                     <Path.Style>
                         <Style TargetType="Path">
@@ -933,90 +939,83 @@
                
             </Grid>
         </Border>
-        
+
         <Grid Grid.Row="3" Background="#35363A">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="3*" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+            <Border Width="36" Height="36"
+                    HorizontalAlignment="Left"
+                    Style="{StaticResource borderOpacity}"
+                    ToolTip="Settings"
+                    Background="Transparent">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseUp">
+                        <i:InvokeCommandAction Command="{Binding OnSettingsClickedCommand}"
+                                               PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Path IsHitTestVisible="False"
+                      Width="22" Height="22"
+                      Data="{StaticResource settings}"
+                      Stretch="Uniform">
+                    <Path.Style>
+                        <Style TargetType="Path">
+                            <Setter Property="Fill" Value="#4B4C52" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsSettingsOpened, Mode=OneWay}" Value="True">
+                                    <Setter Property="Fill" Value="#929292" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Path.Style>
+                </Path>
+            </Border>
 
-            <StackPanel Orientation="Horizontal">
-                <Border Width="24" Height="24"
-                        ToolTip="Settings"
-                        Name="__setting_book"
-                        MouseUp="OnSettingsBookClicked"
-                        Background="Transparent">
-                    <Path Fill="#4B4C52"
-                          Width="12" Height="12"
-                          Data="{StaticResource settings}"
-                          Stretch="Uniform" />
-                </Border>
-
-                <Border Width="24" Height="24"
-                        Name="__copy_book_path"
-                        ToolTip="Copy file path"
-                        MouseUp="OnBookPathCopied"
-                        Background="Transparent">
-                    <Path Fill="#4B4C52"
-                          Width="12" Height="12"
-                          Data="{StaticResource copy}"
-                          Stretch="Uniform" />
-                </Border>
-            </StackPanel>
-
-            <TextBlock Name="fileNameContainer"
-                       Grid.Column="1"
-                       Margin="4 0"
-                       TextTrimming="CharacterEllipsis"
-                       ToolTip="{Binding Text, RelativeSource={RelativeSource Mode=Self}}"
-                       Style="{StaticResource bottomNameStyleUnderline}"
-                       FontSize="12"
-                       Text="C:\" />
-            
-            <StackPanel Grid.Column="2"
-                        Orientation="Horizontal">
-                <Border Width="24" Height="24"
-                        Name="__copy_book_page"
-                        ToolTip="Copy book progress"
-                        Background="Transparent"
-                        MouseUp="OnPageInfoCopied">
-                    <Path Fill="#4B4C52"
-                          Width="12" Height="12"
-                          Data="{StaticResource copy}"
-                          Stretch="Uniform" />
-                </Border>
-                <TextBlock Name="filePageContainer"
-                           FontSize="12"
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <TextBlock FontSize="19"
                            TextAlignment="Center"
-                           Margin="0 0 2 0"
-                           Style="{StaticResource bottomNameStyleUnderline}"
-                           Text="page 0 (0%) -" />
-                <Border Width="24" Height="24"
+                           Margin="0 0 8 0"
+                           Text="{Binding OpenedBookPageNumber, Mode=OneWay}"
+                           Style="{StaticResource bottomNameStyleUnderline}" />
+                <Border Width="36" Height="36"
+                        Style="{StaticResource borderOpacity}"
                         ToolTip="Page turner"
-                        Background="Transparent"
-                        Name="__lock_page_turner"
-                        MouseUp="OnPageTurnerLocked">
-                    <Path Fill="#4B4C52"
-                          Width="16" Height="16"
-                          Stretch="Uniform"
-                          Data="{StaticResource lock-off}" />
+                        Background="Transparent">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding OnPageTurnerClickedCommand}"
+                                                   PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <Path IsHitTestVisible="False"
+                          Width="22" Height="22"
+                          Stretch="Uniform">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="#4B4C52" />
+                                <Setter Property="Data" Value="{StaticResource lock-off}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsPageTurnerShowed, Mode=OneWay}" Value="True">
+                                        <Setter Property="Fill" Value="#929292" />
+                                        <Setter Property="Data" Value="{StaticResource lock-on}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
                 </Border>
             </StackPanel>
-            
-            <TextBlock Name="sizeContainer"
-                       Grid.Column="3"
-                       TextTrimming="CharacterEllipsis"
-                       TextAlignment="Right"
-                       FontSize="12"
-                       Style="{StaticResource bottomNameStyleUnderline}"
-                       Text="1920x1080"/>
+
+            <TextBlock FontSize="19"
+                       HorizontalAlignment="Right"
+                       TextAlignment="Center"
+                       Text="{Binding ChapterName, Mode=OneWay}"
+                       Margin="0 0 8 0"
+                       Style="{StaticResource bottomNameStyleUnderline}" />
         </Grid>
 
         <Grid Name="__temp_logo_border" Grid.RowSpan="3"
               Background="Black"
-              Visibility="Visible">
+              Visibility="Hidden">
 
             <StackPanel Orientation="Vertical"
                         VerticalAlignment="Center"

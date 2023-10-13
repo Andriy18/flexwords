@@ -14,8 +14,6 @@ namespace FlexWords.Dialog.Controls
 {
     public partial class FlexWordsDialog
     {
-        public static DpiScale scale;
-
         private void ApplyLogoLoading()
         {
             Dispatcher.BeginInvoke(async () =>
@@ -54,11 +52,6 @@ namespace FlexWords.Dialog.Controls
             }, DispatcherPriority.Send);
         }
 
-        public void InitializeDpi()
-        {
-            scale = VisualTreeHelper.GetDpi(this);
-        }
-
         public static Workspace GetCurrentWorkspace()
         {
             if (Options.LastWorkspaceIndex == 0) return Options.Workspace1;
@@ -88,6 +81,11 @@ namespace FlexWords.Dialog.Controls
             string name = FontFamilyHelper.GetFontFamilyName(Options.FontFamily);
 
             return MeasureHelper.GetFontHeight(Options.FontSize, name);
+        }
+
+        public static string ToDotString(float number)
+        {
+            return $"{(int)number}.{(int)((number % 1f) * 100f)}";
         }
     }
 }

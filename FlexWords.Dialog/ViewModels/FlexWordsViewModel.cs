@@ -7,7 +7,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlexWords.Dialog.Controls;
 using FlexWords.Dialog.Extensions;
-using FlexWords.Dialog.Helpers;
 
 namespace FlexWords.Dialog.ViewModels
 {
@@ -16,6 +15,12 @@ namespace FlexWords.Dialog.ViewModels
         private readonly FlexWordsDialog _dialog;
         private Shape? _focusModeIcon;
         private bool _isCancelPopupOpened;
+        private string? _chapterName;
+        private string? _openedBookPageNumber;
+        private string? _bookmarkText;
+        private double _pageTurnerValue;
+        private double _maxPageTurnerValue;
+        private bool _isSettingsOpened;
 
         public FlexWordsViewModel(FlexWordsDialog dialog)
         {
@@ -25,8 +30,10 @@ namespace FlexWords.Dialog.ViewModels
             OnFocusModeClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnFocusModeClicked, IsBookOpened);
             OnFocusModeLoadedCommand = new RelayCommand<RoutedEventArgs>(OnFocusModeLoaded);
             OnBookmarkClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnBookmarkClicked, IsBookOpened);
-            OnCancelPopupOpenCommand = new RelayCommand<MouseButtonEventArgs>(OnCancelPopupOpen);
-            OnCancelPopupClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnCancelPopupClicked);
+            OnCancelPopupOpenCommand = new RelayCommand<MouseButtonEventArgs>(OnCancelPopupOpen, IsBookOpened);
+            OnCancelPopupClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnCancelPopupClicked, IsBookOpened);
+            OnPageTurnerClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnPageTurnerClicked, IsBookOpened);
+            OnSettingsClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnSettingsClicked, IsBookOpened);
         }
 
         public IRelayCommand OnTextContainerSizeChangedCommand { get; }
@@ -36,12 +43,45 @@ namespace FlexWords.Dialog.ViewModels
         public IRelayCommand OnBookmarkClickedCommand { get; }
         public IRelayCommand OnCancelPopupOpenCommand { get; }
         public IRelayCommand OnCancelPopupClickedCommand { get; }
+        public IRelayCommand OnPageTurnerClickedCommand { get; }
+        public IRelayCommand OnSettingsClickedCommand { get; }
 
         public bool IsScrollLocked { get; set; }
         public bool FocusMode { get; set; }
         public bool IsBookmarkSaved { get; set; }
         public double CanclePopupSize { get; set; }
         public double CanclePopupIconSize { get; set; }
+        public bool IsPageTurnerShowed { get; set; }
+        public bool IsSettingsOpened
+        {
+            get => _isSettingsOpened;
+            set => SetProperty(ref _isSettingsOpened, value);
+        }
+        public string? ChapterName
+        {
+            get => _chapterName;
+            set => SetProperty(ref _chapterName, value);
+        }
+        public string? OpenedBookPageNumber
+        {
+            get => _openedBookPageNumber;
+            set => SetProperty(ref _openedBookPageNumber, value);
+        }
+        public string? BookmarkText
+        {
+            get => _bookmarkText;
+            set => SetProperty(ref _bookmarkText, value);
+        }
+        public double PageTurnerValue
+        {
+            get => _pageTurnerValue;
+            set => SetProperty(ref _pageTurnerValue, value);
+        }
+        public double MaxPageTurnerValue
+        {
+            get => _maxPageTurnerValue;
+            set => SetProperty(ref _maxPageTurnerValue, value);
+        }
         public bool IsCancelPopupOpened
         {
             get => _isCancelPopupOpened;
@@ -149,6 +189,21 @@ namespace FlexWords.Dialog.ViewModels
 
             IsCancelPopupOpened = false;
             _dialog.UnselectAllWords();
+        }
+
+        private void OnPageTurnerClicked(MouseButtonEventArgs? args)
+        {
+            if (!args.TryCheckButtonNullArgs(out Border _)) return;
+
+            IsPageTurnerShowed = !IsPageTurnerShowed;
+            OnPropertyChanged(nameof(IsPageTurnerShowed));
+        }
+
+        private void OnSettingsClicked(MouseButtonEventArgs? args)
+        {
+            if (!args.TryCheckButtonNullArgs(out Border _)) return;
+
+            _dialog.PerformSettingsClick(true);
         }
     }
 }
