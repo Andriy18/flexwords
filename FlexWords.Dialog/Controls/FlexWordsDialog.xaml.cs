@@ -118,6 +118,15 @@ namespace FlexWords.Dialog.Controls
 
             if (ofd.ShowDialog() ?? false)
             {
+                if (IsBookOpened)
+                {
+                    if (MessageBox.Show(
+                        "Do you accept to delete last opened book progress?",
+                        "Delete book progress",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Question) == MessageBoxResult.Cancel) return;
+                }
+
                 OpenBook(ofd.FileName);
 
                 if (_openedBook is null) return;
