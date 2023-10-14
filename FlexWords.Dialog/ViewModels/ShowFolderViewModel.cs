@@ -1,48 +1,51 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using FlexWords.Dialog.Controls.Components;
-using FlexWords.Dialog.Extensions;
-using FlexWords.Dialog.Helpers;
-using FlexWords.Dialog.ViewModels.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using FlexWords.Constants;
+using FlexWords.Dialog.Extensions;
+using FlexWords.Dialog.Helpers;
+using FlexWords.Dialog.ViewModels.Models;
 
 namespace FlexWords.Dialog.ViewModels
 {
     public class ShowFolderViewModel : ObservableObject
     {
-        public static string[] SupportedExtensions =
-        {
-            ".txt",
-            ".epub",
-            ".pdf",
-            ".docx",
-        };
+        private string? _folder;
 
-        private ShowFolder _control;
-        public string? Folder { get; set; }
+        public string? Folder
+        {
+            get => _folder;
+            set
+            {
+                _folder = value;
+                Options.LastUsedFolder = _folder ?? string.Empty;
+            }
+        }
         public string? FolderName { get; set; }
 
-        public ShowFolderViewModel(ShowFolder control)
+        public ShowFolderViewModel()
         {
-            _control = control;
             Items = new ObservableCollection<FileModel>();
-            UpdateContent(FolderHelper.Desktop);
-
             OnBackClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnBackClicked);
+
+            Folder = Options.LastUsedFolder;
+            InitializeFolder();
         }
 
         public ObservableCollection<FileModel> Items { get; set; }
 
         public IRelayCommand OnBackClickedCommand { get;}
+
+        private void InitializeFolder()
+        {
+            if (string.IsNullOrEmpty(Folder)) UpdateContentDriver();
+            else UpdateContent(Folder);
+        }
 
         public void UpdateContent(string parent)
         {
@@ -64,7 +67,7 @@ namespace FlexWords.Dialog.ViewModels
             {
                 string ext = Path.GetExtension(file).ToLower();
 
-                if (SupportedExtensions.Contains(ext))
+                if (Words.FileFormat.SupportedFormats.Contains(ext))
                 {
                     Items.Add(new FileModel(this, file));
                 }
@@ -75,8 +78,8 @@ namespace FlexWords.Dialog.ViewModels
 
         public void UpdateContentDriver()
         {
-            Folder = string.Empty;
-            FolderName = string.Empty;
+            Folder = null;
+            FolderName = null;
 
             OnPropertyChanged(nameof(Folder));
             OnPropertyChanged(nameof(FolderName));
@@ -93,7 +96,7 @@ namespace FlexWords.Dialog.ViewModels
 
         private void OnBackClicked(MouseButtonEventArgs? args)
         {
-            if (!args.TryCheckButtonNullArgs(out Border _) || string.IsNullOrEmpty(Folder)) return;
+            if (!args.TryCheckButtonNullArgs(out Border _) || Folder is null) return;
 
             DirectoryInfo? parent = Directory.GetParent(Folder);
 

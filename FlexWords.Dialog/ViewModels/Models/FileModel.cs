@@ -4,14 +4,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using FlexWords.Constants;
 using FlexWords.Dialog.Extensions;
 
 namespace FlexWords.Dialog.ViewModels.Models
 {
     public sealed class FileModel : ObservableObject
     {
+        private readonly ShowFolderViewModel _handler;
         private FileType _fileType;
-        private ShowFolderViewModel _handler;
 
         public FileModel(ShowFolderViewModel handler, string path, FileType type = default)
         {
@@ -21,37 +22,21 @@ namespace FlexWords.Dialog.ViewModels.Models
 
             Name = Path.GetFileName(path);
 
-            if (type == FileType.Folder)
+            if (type is FileType.Folder)
             {
                 Name = Path.GetFileName(path);
-                NameBackground = "#FFDA72".ToBrush();
+                NameBackground = Words.FileFormat.FormatThemes[type.ToString()].ToBrush();
             }
-            else if (type == FileType.File)
+            else if (type is FileType.File)
             {
                 Name = Path.GetFileNameWithoutExtension(path);
                 Ext = Path.GetExtension(path).ToLower();
-
-                if (Ext == ".txt")
-                {
-                    ExtBackground = "#ADADAD".ToBrush();
-                }
-                else if (Ext == ".epub")
-                {
-                    ExtBackground = "#8ABA20".ToBrush();
-                }
-                else if (Ext == ".pdf")
-                {
-                    ExtBackground = "#B90010".ToBrush();
-                }
-                else if (Ext == ".docx")
-                {
-                    ExtBackground = "#185ABD".ToBrush();
-                }
+                ExtBackground = Words.FileFormat.FormatThemes[Ext].ToBrush();
             }
-            else
+            else if (type is FileType.Driver)
             {
                 Name = path;
-                NameBackground = "#E1E3E6".ToBrush();
+                NameBackground = Words.FileFormat.FormatThemes[type.ToString()].ToBrush();
             }
 
             OnFileClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnFileClicked);

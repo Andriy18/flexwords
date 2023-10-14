@@ -33,9 +33,9 @@ namespace FlexWords.Dialog.Controls
             InitializeSettings();
             InitializeButtons();
 
-            if (File.Exists(Options.LastBookPath))
+            if (File.Exists(Options.LastUsedBook))
             {
-                OpenBookInternal(Options.LastBookPath);
+                OpenBookInternal(Options.LastUsedBook);
 
                 if (_openedBook is null) return;
 
@@ -125,8 +125,8 @@ namespace FlexWords.Dialog.Controls
             book.FillStatistics();
             _openedBook = book;
 
-            Options.LastBookPath = path;
-            this.viewModel.MaxPageTurnerValue = (int)_openedBook.PageCount;
+            Options.LastUsedBook = path;
+            viewModel.MaxPageTurnerValue = (int)_openedBook.PageCount;
         }
 
         private void UpdateBookmarkView()

@@ -17,5 +17,28 @@
 
         public const string DefaultChapter = "1";
         public const string ChapterSeparator = "###";
+
+        public static class FileFormat
+        {
+            public const string TxtExt = ".txt";
+            public const string EpubExt = ".epub";
+            public const string PdfExt = ".pdf";
+            public const string DocxExt = ".docx";
+
+            public static readonly string[] SupportedFormats =
+            {
+                TxtExt, EpubExt, PdfExt, DocxExt
+            };
+
+            public static readonly Dictionary<string, string> FormatThemes = new()
+            {
+                { TxtExt, "#ADADAD" },
+                { EpubExt, "#8ABA20" },
+                { PdfExt, "#F15B48" },
+                { DocxExt, "#185ABD" },
+                { "Driver", "#E1E3E6" },
+                { "Folder", "#FFDA72" },
+            };
+        }
     }
 }

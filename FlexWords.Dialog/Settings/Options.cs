@@ -8,16 +8,6 @@ namespace FlexWords.Dialog
 {
     public static partial class Options
     {
-        public static string LastBookPath
-        {
-            get => GeneralOptions.Default.LastBookPath;            
-            set
-            {
-                GeneralOptions.Default.LastBookPath = value;
-                GeneralOptions.Default.Save();
-            }
-        }
-
         public static Bookmark LastBkmark
         {
             get => Bookmark.Parse(GeneralOptions.Default.LastBkmark);            
@@ -284,6 +274,26 @@ namespace FlexWords.Dialog
         }
 
         #endregion
+
+        public static string LastUsedBook
+        {
+            get => GeneralOptions.Default.LastBookPath;
+            set
+            {
+                GeneralOptions.Default.LastBookPath = value;
+                GeneralOptions.Default.Save();
+            }
+        }
+
+        public static string LastUsedFolder
+        {
+            get => GeneralOptions.Default.LastUsedFolder;
+            set
+            {
+                GeneralOptions.Default.LastUsedFolder = value;
+                GeneralOptions.Default.Save();
+            }
+        }
     }
 
     public static partial class Options
