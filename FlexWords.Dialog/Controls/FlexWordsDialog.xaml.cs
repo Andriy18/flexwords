@@ -2,14 +2,10 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Shapes;
 using FlexWords.Entities.Classes;
 using FlexWords.Extensions;
 using FlexWords.Translator;
-using Microsoft.Win32;
 using FlexWords.Dialog.Animation;
-using FlexWords.Dialog.Controls.UserDialogs;
-using FlexWords.Dialog.Extensions;
 using FlexWords.Dialog.Helpers;
 using FlexWords.Dialog.ViewModels;
 using FlexWords.Entities.Structs;
@@ -39,7 +35,7 @@ namespace FlexWords.Dialog.Controls
 
             if (File.Exists(Options.LastBookPath))
             {
-                OpenBook(Options.LastBookPath);
+                OpenBookInternal(Options.LastBookPath);
 
                 if (_openedBook is null) return;
 
@@ -83,40 +79,26 @@ namespace FlexWords.Dialog.Controls
             }
         }
 
-        private void OnFileOpened(object sender, MouseButtonEventArgs e)
+        public void OpenBook(string path)
         {
-            var ofd = new OpenFileDialog
+            if (IsBookOpened)
             {
-                Multiselect = false
-            };
-
-            if (ofd.ShowDialog() ?? false)
-            {
-                if (IsBookOpened)
-                {
-                    if (MessageBox.Show(
-                        "Do you accept to delete last opened book progress?",
-                        "Delete book progress",
-                        MessageBoxButton.OKCancel,
-                        MessageBoxImage.Question) == MessageBoxResult.Cancel) return;
-                }
-
-                OpenBook(ofd.FileName);
-
-                if (_openedBook is null) return;
-
-                ForceUpdate(_openedBook, CurrentWorkspace);
-                this.viewModel.PageTurnerValue = GetCurrentParagraph().TotalPages;
-                Options.CaptureBkmark = null;
-                viewModel.InitBookmark(false);
-                UpdateBookmarkView();
+                if (MessageBox.Show(
+                    "Do you accept to delete last opened book progress?",
+                    "Delete book progress",
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Question) == MessageBoxResult.Cancel) return;
             }
-        }
 
-        private void OnEdited(object sender, MouseButtonEventArgs e)
-        {
-            var dialog = new TextReplacementDialog();
-            dialog.ShowDialog();
+            OpenBookInternal(path);
+
+            if (_openedBook is null) return;
+
+            ForceUpdate(_openedBook, CurrentWorkspace);
+            this.viewModel.PageTurnerValue = GetCurrentParagraph().TotalPages;
+            Options.CaptureBkmark = null;
+            viewModel.InitBookmark(false);
+            UpdateBookmarkView();
         }
 
         private void OnInfoShowed(object sender, MouseButtonEventArgs e)
@@ -136,7 +118,7 @@ namespace FlexWords.Dialog.Controls
             MessageBox.Show(info, "General information");
         }
 
-        private void OpenBook(string path)
+        private void OpenBookInternal(string path)
         {
             var book = new Book(path);
             book.FillContent();
@@ -212,8 +194,19 @@ namespace FlexWords.Dialog.Controls
             double newValue = viewModel.IsSettingsOpened ? 0 : 300;
             AnimHelper.RenderTransformMove(settingsContainer, newValue);
 
-            if (viewModel.IsSettingsOpened) this.MouseUp += OnSettingsMouseDown;
-            else this.MouseUp -= OnSettingsMouseDown;
+            if (source) _blockExecuteSettings = true;
+        }
+
+        public void PerformFolderClick(bool source = true)
+        {
+            if (!viewModel.ShowFolderManager && !source) return;
+
+            viewModel.ShowFolderManager = !viewModel.ShowFolderManager;
+
+            double newValue = viewModel.ShowFolderManager ? 0 : -300;
+            AnimHelper.RenderTransformMove(folderContainer, newValue, true);
+
+            if (source) _blockExecuteFolder = true;
         }
 
         public void SetBookmark()

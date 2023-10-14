@@ -4,11 +4,14 @@ using System.IO;
 using System.Windows;
 using System.Windows.Threading;
 using Newtonsoft.Json;
+using FlexWords.Dialog.Controls;
 
 namespace FlexWords.Dialog
 {
     public partial class App : Application
     {
+        public static FlexWordsDialog Dialog => (FlexWordsDialog)Application.Current.MainWindow;
+
         public App()
         {
             DispatcherUnhandledException += OnAppUnhandledException;

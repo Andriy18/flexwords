@@ -10,7 +10,10 @@ namespace FlexWords.Dialog.Controls
 {
     public partial class FlexWordsDialog
     {
+        private bool _blockExecuteSettings = false;
+        private bool _blockExecuteFolder = false;
         private bool _mouseOverSettings = false;
+        private bool _mouseOverFolder = false;
 
         public Workspace CurrentWorkspace { get; private set; } = GetCurrentWorkspace();
 
@@ -27,7 +30,7 @@ namespace FlexWords.Dialog.Controls
 
             InitializeSettingButtons();
             SetActiveSettingButtons();
-            InitializeSettingFeatures();
+            InitializeContainersFeatures();
 
             // 'General' options
             __logoPreview.Checked = Options.LogoPreview;
@@ -175,15 +178,36 @@ namespace FlexWords.Dialog.Controls
             __inactiveTextTransparency.Value = workspace.InactiveTextTransparency;
         }
 
-        private void InitializeSettingFeatures()
+        private void InitializeContainersFeatures()
         {
+            this.MouseUp += OnContainersMouseUp;
+
             settingsContainer.MouseEnter += (s, e) => _mouseOverSettings = true;
             settingsContainer.MouseLeave += (s, e) => _mouseOverSettings = false;
+
+            folderContainer.MouseEnter += (s, e) => _mouseOverFolder = true;
+            folderContainer.MouseLeave += (s, e) => _mouseOverFolder = false;
         }
 
-        private void OnSettingsMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnContainersMouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (!_mouseOverSettings) PerformSettingsClick(false);
+            if (_blockExecuteFolder)
+            {
+                _blockExecuteFolder = false;
+            }
+            else if (!_mouseOverFolder && viewModel.ShowFolderManager)
+            {
+                PerformFolderClick(false);
+            }
+
+            if (_blockExecuteSettings)
+            {
+                _blockExecuteSettings = false;
+            }
+            else if (!_mouseOverSettings && viewModel.IsSettingsOpened)
+            {
+                PerformSettingsClick(false);
+            }
         }
 
         private void OnTextStyleReset(object sender, MouseButtonEventArgs e)

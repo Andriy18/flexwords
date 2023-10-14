@@ -396,18 +396,44 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
-            
+
             <StackPanel Orientation="Horizontal">
-                <TextBlock MouseUp="OnFileOpened"
-                           Style="{StaticResource topNameStyleUnderline}"
-                           Margin="8 0 4 0"
-                           Text="File" />
-                <TextBlock MouseUp="OnEdited"
-                           Style="{StaticResource topNameStyleUnderline}"
-                           Text="Edit" />
-                <TextBlock MouseUp="OnInfoShowed"
-                           Style="{StaticResource topNameStyleUnderline}"
-                           Text="Info" />
+                <Border Style="{StaticResource borderOpacity}"
+                        Background="Transparent"
+                        Width="36" Height="36">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseDown">
+                            <i:InvokeCommandAction Command="{Binding OnShowFolderClickedCommand}"
+                                                   PassEventArgsToCommand="True" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                    <Path IsHitTestVisible="False"
+                          Width="20" Height="20"
+                          Data="{StaticResource folder}"
+                          Stretch="Uniform">
+                        <Path.Style>
+                            <Style TargetType="Path">
+                                <Setter Property="Fill" Value="#4B4C52" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ShowFolderManager, Mode=OneWay}" Value="True">
+                                        <Setter Property="Fill" Value="#929292" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Path.Style>
+                    </Path>
+                </Border>
+                <Border Style="{StaticResource borderOpacity}"
+                        MouseUp="OnInfoShowed"
+                        Background="Transparent"
+                        Width="36" Height="36">
+                    <Path IsHitTestVisible="False"
+                          Width="18" Height="18"
+                          ToolTip="Book information"
+                          Fill="#4B4C52"
+                          Data="{StaticResource info}"
+                          Stretch="Uniform" />
+                </Border>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal"
@@ -428,7 +454,7 @@
                         </i:EventTrigger>
                     </i:Interaction.Triggers>
                     <Path IsHitTestVisible="False"
-                          Width="22" Height="22"
+                          Width="19" Height="19"
                           Stretch="Uniform"
                           Data="{StaticResource bookmark}">
                         <Path.Style>
@@ -459,7 +485,7 @@
                 </i:Interaction.Triggers>
                 <Path Data="{StaticResource lock}"
                       IsHitTestVisible="False"
-                      Width="22" Height="22"
+                      Width="20" Height="20"
                       Stretch="Uniform">
                     <Path.Style>
                         <Style TargetType="Path">
@@ -475,6 +501,20 @@
             </Border>
         </Grid>
 
+        <Border Name="folderContainer"
+                Width="300" Grid.Row="1"
+                Margin="0 2"
+                BorderBrush="#5F6368"
+                BorderThickness="0 0 1 0"
+                CornerRadius="0 12 12 0"
+                Background="#35363A"
+                HorizontalAlignment="Left">
+            <Border.RenderTransform>
+                <TranslateTransform X="-300" />
+            </Border.RenderTransform>
+            <comps:ShowFolder />
+        </Border>
+        
         <Border Name="settingsContainer" Grid.Row="1"
                 Height="300"
                 CornerRadius="12 12 0 0"
@@ -953,7 +993,7 @@
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <Path IsHitTestVisible="False"
-                      Width="22" Height="22"
+                      Width="19" Height="19"
                       Data="{StaticResource settings}"
                       Stretch="Uniform">
                     <Path.Style>

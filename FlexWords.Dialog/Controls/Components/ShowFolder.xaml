@@ -1,0 +1,137 @@
+﻿<UserControl x:Class="FlexWords.Dialog.Controls.Components.ShowFolder"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FlexWords.Dialog.Controls.Components"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:comps="clr-namespace:FlexWords.Dialog.Controls.Components"
+             xmlns:conv="clr-namespace:FlexWords.Dialog.Converters"
+             xmlns:vm="clr-namespace:FlexWords.Dialog.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance d:Type=vm:ShowFolderViewModel}">
+
+    <UserControl.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
+        <conv:IncludeMarginConverter x:Key="IncludeMargin" />
+        
+        <Style x:Key="baseUnderlineTextBlock" TargetType="TextBlock">
+            <Setter Property="TextDecorations" Value="None" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="TextDecorations" Value="Underline" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="borderOpacity" TargetType="Border">
+            <Setter Property="Opacity" Value="1" />
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Opacity" Value="0.6" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="defaultText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#4B4C52" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Verdana" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            <Setter Property="FontSize" Value="17" />
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="36" />
+            <RowDefinition Height="1" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Border Width="36" Height="36"
+                    Background="Transparent"
+                    ToolTip="Back"
+                    Style="{StaticResource borderOpacity}"
+                    HorizontalAlignment="Left">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseUp">
+                        <i:InvokeCommandAction Command="{Binding OnBackClickedCommand}"
+                                               PassEventArgsToCommand="True" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <Path IsHitTestVisible="False"
+                      Stretch="Uniform"
+                      Width="22" Height="22"
+                      Data="{StaticResource back}"
+                      Fill="#4B4C52" />
+            </Border>
+
+            <TextBlock HorizontalAlignment="Right"
+                       Style="{StaticResource defaultText}"
+                       Margin="0 0 8 0"
+                       Foreground="#FFDA72"
+                       Text="{Binding FolderName, Mode=OneWay}">
+                
+            </TextBlock>
+        </Grid>
+        
+        <Border Height="1" Grid.Row="1"
+                Background="#5F6368"/>
+
+        <Grid Grid.Row="2"
+              Margin="4">
+            <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                <ItemsControl ItemsSource="{Binding Items, Mode=OneWay}"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.IsContainerVirtualizable="True"
+                              HorizontalContentAlignment="Stretch"
+                              ScrollViewer.CanContentScroll="True">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Style="{StaticResource borderOpacity}"
+                                    ToolTip="{Binding FullPath, Mode=OneWay}"
+                                    Background="Transparent">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseUp">
+                                        <i:InvokeCommandAction Command="{Binding OnFileClickedCommand}"
+                                                               PassEventArgsToCommand="True" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                                <DockPanel IsHitTestVisible="False">
+                                    <Border CornerRadius="7"
+                                            HorizontalAlignment="Stretch"
+                                            Background="{Binding NameBackground, Mode=OneWay}"
+                                            Padding="3"
+                                            Margin="0 2">
+                                        <TextBlock Text="{Binding Name, Mode=OneWay}"
+                                                   Style="{StaticResource defaultText}"
+                                                   MaxWidth="240" />
+                                    </Border>
+
+                                    <Border CornerRadius="7"
+                                            HorizontalAlignment="Right"
+                                            Background="{Binding ExtBackground, Mode=OneWay}"
+                                            Padding="0 3 3 3"
+                                            Visibility="{Binding IsFile, Converter={StaticResource BooleanToVisibility}, Mode=OneWay}"
+                                            Margin="0 2">
+                                        <TextBlock Text="{Binding Ext, Mode=OneWay}"
+                                                   Foreground="#35363A"
+                                                   Style="{StaticResource defaultText}" />
+                                    </Border>
+                                </DockPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</UserControl>

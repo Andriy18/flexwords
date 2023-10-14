@@ -21,6 +21,7 @@ namespace FlexWords.Dialog.ViewModels
         private double _pageTurnerValue;
         private double _maxPageTurnerValue;
         private bool _isSettingsOpened;
+        private bool _showFolderManager;
 
         public FlexWordsViewModel(FlexWordsDialog dialog)
         {
@@ -34,6 +35,7 @@ namespace FlexWords.Dialog.ViewModels
             OnCancelPopupClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnCancelPopupClicked, IsBookOpened);
             OnPageTurnerClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnPageTurnerClicked, IsBookOpened);
             OnSettingsClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnSettingsClicked, IsBookOpened);
+            OnShowFolderClickedCommand = new RelayCommand<MouseButtonEventArgs>(OnShowFolderClicked);
         }
 
         public IRelayCommand OnTextContainerSizeChangedCommand { get; }
@@ -45,6 +47,7 @@ namespace FlexWords.Dialog.ViewModels
         public IRelayCommand OnCancelPopupClickedCommand { get; }
         public IRelayCommand OnPageTurnerClickedCommand { get; }
         public IRelayCommand OnSettingsClickedCommand { get; }
+        public IRelayCommand OnShowFolderClickedCommand { get; }
 
         public bool IsScrollLocked { get; set; }
         public bool FocusMode { get; set; }
@@ -99,6 +102,11 @@ namespace FlexWords.Dialog.ViewModels
 
                 _dialog.SelectedWordsFlickering(value);
             }
+        }
+        public bool ShowFolderManager
+        {
+            get => _showFolderManager;
+            set => SetProperty(ref _showFolderManager, value);
         }
 
         private void OnTextContainerSizeChanged(SizeChangedEventArgs? args)
@@ -204,6 +212,13 @@ namespace FlexWords.Dialog.ViewModels
             if (!args.TryCheckButtonNullArgs(out Border _)) return;
 
             _dialog.PerformSettingsClick(true);
+        }
+
+        private void OnShowFolderClicked(MouseButtonEventArgs? args)
+        {
+            if (!args.TryCheckButtonNullArgs(out Border _)) return;
+
+            _dialog.PerformFolderClick(true);
         }
     }
 }
