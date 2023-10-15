@@ -27,7 +27,12 @@
 
             public static readonly string[] SupportedFormats =
             {
-                TxtExt, EpubExt, PdfExt, DocxExt
+                TxtExt,
+                EpubExt,
+
+                // No file formats are currently supported
+                //PdfExt,
+                //DocxExt
             };
 
             public static readonly Dictionary<string, string> FormatThemes = new()

@@ -9,7 +9,8 @@ using CommunityToolkit.Mvvm.Input;
 using FlexWords.Constants;
 using FlexWords.Dialog.Extensions;
 using FlexWords.Dialog.Helpers;
-using FlexWords.Dialog.ViewModels.Models;
+using FlexWords.Dialog.Models;
+using FlexWords.Entities.Enums;
 
 namespace FlexWords.Dialog.ViewModels
 {

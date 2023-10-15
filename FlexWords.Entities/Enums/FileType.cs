@@ -1,4 +1,4 @@
-﻿namespace FlexWords.Dialog.ViewModels.Models
+﻿namespace FlexWords.Entities.Enums
 {
     public enum FileType
     {

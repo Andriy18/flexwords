@@ -6,8 +6,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FlexWords.Constants;
 using FlexWords.Dialog.Extensions;
+using FlexWords.Dialog.ViewModels;
+using FlexWords.Entities.Enums;
 
-namespace FlexWords.Dialog.ViewModels.Models
+namespace FlexWords.Dialog.Models
 {
     public sealed class FileModel : ObservableObject
     {
