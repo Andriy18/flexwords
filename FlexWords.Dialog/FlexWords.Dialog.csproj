@@ -26,6 +26,7 @@
     <ProjectReference Include="..\FlexWords.Constants\FlexWords.Constants.csproj" />
     <ProjectReference Include="..\FlexWords.Entities\FlexWords.Entities.csproj" />
     <ProjectReference Include="..\FlexWords.Extensions\FlexWords.Extensions.csproj" />
+    <ProjectReference Include="..\FlexWords.FileExtractors\FlexWords.FileExtractors.csproj" />
     <ProjectReference Include="..\FlexWords.Helpers\FlexWords.Helpers.csproj" />
     <ProjectReference Include="..\FlexWords.Translator\FlexWords.Translator.csproj" />
   </ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using FlexWords.Constants;
+using FlexWords.Entities;
 using FlexWords.Entities.Classes;
 using FlexWords.Entities.Enums;
 using FlexWords.Entities.Structs;
@@ -8,6 +9,7 @@ namespace FlexWords.Extensions
 {
     public static class BookExtensions
     {
+        [Obsolete]
         public static void FillContent(this Book book)
         {
             string[] lines = FileHelper.ReadAndRemoveEmptyLines(book.FilePath);
@@ -32,6 +34,22 @@ namespace FlexWords.Extensions
                 Sentence[] sentences = SplitToWords(line).SplitToSentences();
                 BookParagraph paragraph = new(chapter, sentences);
                 book.Paragraphs.Add(paragraph);
+            }
+        }
+
+        public static void FillContent(this Book book, RawFileData data)
+        {
+            foreach (KeyValuePair<string, List<string>> item in data.Data)
+            {
+                var chapter = new BookChapter(book, item.Key);
+                book.Chapters.Add(chapter);
+
+                foreach (string line in item.Value)
+                {
+                    Sentence[] sentences = SplitToWords(line).SplitToSentences();
+                    var paragraph = new BookParagraph(chapter, sentences);
+                    book.Paragraphs.Add(paragraph);
+                }
             }
         }
 

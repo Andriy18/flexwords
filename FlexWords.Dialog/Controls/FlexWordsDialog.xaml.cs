@@ -9,6 +9,11 @@ using FlexWords.Dialog.Animation;
 using FlexWords.Dialog.Helpers;
 using FlexWords.Dialog.ViewModels;
 using FlexWords.Entities.Structs;
+using FlexWords.Constants;
+using System.Linq;
+using FlexWords.Entities;
+using FlexWords.FileExtractors;
+using FlexWords.Entities.Enums;
 
 namespace FlexWords.Dialog.Controls
 {
@@ -42,7 +47,7 @@ namespace FlexWords.Dialog.Controls
                 _openedBook.Bkmark = Options.LastBkmark;
 
                 ForceUpdate(_openedBook, CurrentWorkspace);
-                this.viewModel.PageTurnerValue = GetCurrentParagraph().TotalPages;
+                viewModel.PageTurnerValue = GetCurrentParagraph().TotalPages;
                 UpdateBookmarkView();
             }
 
@@ -65,7 +70,7 @@ namespace FlexWords.Dialog.Controls
             if (popupTranslateContent.IsOpen) popupTranslateContent.IsOpen = false;
             if (viewModel.IsCancelPopupOpened) viewModel.IsCancelPopupOpened = false;
 
-            this.viewModel.PageTurnerValue = GetCurrentParagraph().TotalPages;
+            viewModel.PageTurnerValue = GetCurrentParagraph().TotalPages;
             UpdateBookmarkView();
         }
 
@@ -95,7 +100,7 @@ namespace FlexWords.Dialog.Controls
             if (_openedBook is null) return;
 
             ForceUpdate(_openedBook, CurrentWorkspace);
-            this.viewModel.PageTurnerValue = GetCurrentParagraph().TotalPages;
+            viewModel.PageTurnerValue = GetCurrentParagraph().TotalPages;
             Options.CaptureBkmark = null;
             viewModel.InitBookmark(false);
             UpdateBookmarkView();
@@ -120,8 +125,20 @@ namespace FlexWords.Dialog.Controls
 
         private void OpenBookInternal(string path)
         {
+            FileFormat format = FileFormat.None;
+            string ext = Path.GetExtension(path).ToLower();
+
+            if (!Words.FileFormat.SupportedFormats.Contains(ext)) return;
+
+            if (ext == Words.FileFormat.TxtExt) format = FileFormat.Txt;
+            else if (ext == Words.FileFormat.EpubExt) format = FileFormat.Epub;
+
+            RawFileData fileData = FileExtractor.Extract(path, format);
+
+            if (!fileData.HasData) return;
+
             var book = new Book(path);
-            book.FillContent();
+            book.FillContent(fileData);
             book.FillStatistics();
             _openedBook = book;
 
@@ -134,8 +151,8 @@ namespace FlexWords.Dialog.Controls
             if (!IsBookOpened) return;
 
             BookParagraph paragraph = GetCurrentParagraph();
-            this.viewModel.OpenedBookPageNumber = $"p: {ToDotString(paragraph.GetTotalPagesCount())}";
-            this.viewModel.ChapterName = $"ch: {paragraph.Chapter.Title}";
+            viewModel.OpenedBookPageNumber = $"p: {ToDotString(paragraph.GetTotalPagesCount())}";
+            viewModel.ChapterName = $"ch: {paragraph.Chapter.Title}";
 
             UpdateCaptureBookmarkView();
         }
@@ -153,16 +170,16 @@ namespace FlexWords.Dialog.Controls
                     float currentPages = GetCurrentParagraph().GetTotalPagesCount();
                     float pages = _openedBook.Paragraphs[Options.CaptureBkmark.Value.paragraph].GetTotalPagesCount();
 
-                    this.viewModel.BookmarkText = $"-{ToDotString(pages - currentPages)}";
+                    viewModel.BookmarkText = $"-{ToDotString(pages - currentPages)}";
                 }
                 else
                 {
-                    this.viewModel.BookmarkText = $"{ToDotString(value)}";
+                    viewModel.BookmarkText = $"{ToDotString(value)}";
                 }
             }
             else
             {
-                this.viewModel.BookmarkText = string.Empty;
+                viewModel.BookmarkText = string.Empty;
             }
         }
 
@@ -179,7 +196,7 @@ namespace FlexWords.Dialog.Controls
 
             if (viewModel.IsPageTurnerShowed)
             {
-                bool isSameParagraph = _openedBook.MoveToPage((float)this.viewModel.PageTurnerValue);
+                bool isSameParagraph = _openedBook.MoveToPage((float)viewModel.PageTurnerValue);
                 ForceUpdate(_openedBook, CurrentWorkspace, isSameParagraph);
                 UpdateBookmarkView();
             }

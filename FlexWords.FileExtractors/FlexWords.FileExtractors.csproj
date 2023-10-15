@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EpubSharp.dll" Version="1.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FlexWords.Constants\FlexWords.Constants.csproj" />
+    <ProjectReference Include="..\FlexWords.Entities\FlexWords.Entities.csproj" />
+    <ProjectReference Include="..\FlexWords.Helpers\FlexWords.Helpers.csproj" />
+  </ItemGroup>
+
+</Project>
