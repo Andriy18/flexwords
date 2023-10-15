@@ -10,6 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\background-1.jpg" />
+    <None Remove="Images\background-2.jpg" />
+    <None Remove="Images\background-3.jpg" />
+    <None Remove="Images\background-4.jpg" />
+    <None Remove="Images\background-5.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="icon.ico" />
   </ItemGroup>
 
@@ -29,6 +37,14 @@
     <ProjectReference Include="..\FlexWords.FileExtractors\FlexWords.FileExtractors.csproj" />
     <ProjectReference Include="..\FlexWords.Helpers\FlexWords.Helpers.csproj" />
     <ProjectReference Include="..\FlexWords.Translator\FlexWords.Translator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\background-1.jpg" />
+    <Resource Include="Images\background-2.jpg" />
+    <Resource Include="Images\background-3.jpg" />
+    <Resource Include="Images\background-4.jpg" />
+    <Resource Include="Images\background-5.jpg" />
   </ItemGroup>
 
   <ItemGroup>
