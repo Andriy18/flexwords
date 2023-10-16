@@ -10,7 +10,7 @@ namespace FlexWords.Dialog.Handlers
     {
         public int LineIndex { get; set; }
 
-        public Workspace Readspace
+        public ThemeSet Readspace
         {
             set
             {

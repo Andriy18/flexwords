@@ -7,20 +7,25 @@
         xmlns:comps="clr-namespace:FlexWords.Dialog.Controls.Components"
         xmlns:vm="clr-namespace:FlexWords.Dialog.ViewModels"
         xmlns:conv="clr-namespace:FlexWords.Dialog.Converters"
+        xmlns:sys="clr-namespace:System;assembly=netstandard"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
         Height="600" Width="900"
-        Background="#202124"
         Loaded="OnWindowLoaded"
         Closed="OnWindowClosed"
+        Name="MainWindow"
         d:DataContext="{d:DesignInstance d:Type=vm:FlexWordsViewModel}">
+    <Window.Background>
+        <SolidColorBrush Color="{Binding Background, Mode=OneWay}" />
+    </Window.Background>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding OnLoadedAsyncCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
 
     <Window.Resources>
-        <conv:ReverseBooleanConverter x:Key="ReverseBoolean" />
-        <conv:BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
-        <conv:IncludeMarginConverter x:Key="IncludeMargin" />
-
         <Style x:Key="inputStyle" TargetType="TextBox">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="#707070" />
@@ -131,6 +136,11 @@
             </RowDefinition>
         </Grid.RowDefinitions>
 
+        <Image Stretch="UniformToFill"
+               Grid.Row="1"
+               Source="{Binding CoverImage, Mode=OneWay, IsAsync=True}"
+               Opacity="{Binding CoverOpacity, Mode=OneWay}" />
+
         <Grid Grid.Row="1" Background="Transparent"
               MouseWheel="OnMouseWheelChanged">
             <i:Interaction.Triggers>
@@ -140,11 +150,10 @@
                 </i:EventTrigger>
             </i:Interaction.Triggers>
 
-            <Image Stretch="UniformToFill" />
-
             <StackPanel x:Name="textItemsContainer"
                         VerticalAlignment="Center"
                         Orientation="Vertical"
+                        Width="{Binding AreaWidth, Mode=OneWay}"
                         Margin="100 0">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SizeChanged">
@@ -169,12 +178,25 @@
                     </Grid.RowDefinitions>
 
                     <Border x:Name="__popup_border"
-                            Background="#202124"
-                            BorderBrush="#5F6368"
+                            BorderBrush="{Binding ElementName=__popup_bottom_text, Path=Foreground, Mode=OneWay}"
                             Grid.Row="1"
                             Padding="6 4 6 6"
                             BorderThickness="1"
                             CornerRadius="7">
+                        <Border.Background>
+                            <SolidColorBrush>
+                                <SolidColorBrush.Color>
+                                    <MultiBinding Converter="{StaticResource AdaptiveHexToColor}">
+                                        <Binding Path="Theme.Background" Mode="OneWay" />
+                                        <Binding>
+                                            <Binding.Source>
+                                                <sys:Double>0.05</sys:Double>
+                                            </Binding.Source>
+                                        </Binding>
+                                    </MultiBinding>
+                                </SolidColorBrush.Color>
+                            </SolidColorBrush>
+                        </Border.Background>
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto" />
@@ -187,8 +209,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Border x:Name="__popup_separator"
-                                    Background="#5F6368"
+                            <Border Background="{Binding ElementName=__popup_bottom_text, Path=Foreground, Mode=OneWay}"
                                     Height="1"
                                     Grid.Row="1"
                                     Margin="-6 0"
@@ -203,7 +224,7 @@
                                     Height="{Binding CopyTextHeigth, Mode=TwoWay}"
                                     Grid.Column="0" Grid.Row="0">
                                 <Path Stretch="Uniform"
-                                      Fill="#5F6368"
+                                      Fill="{Binding ElementName=__popup_bottom_text, Path=Foreground, Mode=OneWay}"
                                       Data="{StaticResource copy}" />
                                 <Border.Style>
                                     <Style TargetType="Border">
@@ -224,7 +245,7 @@
                                     Height="{Binding CopyTextHeigth, Mode=TwoWay}"
                                     Grid.Column="0" Grid.Row="2">
                                 <Path Stretch="Uniform"
-                                      Fill="#5F6368"
+                                      Fill="{Binding ElementName=__popup_bottom_text, Path=Foreground, Mode=OneWay}"
                                       Data="{StaticResource copy}" />
                                 <Border.Style>
                                     <Style TargetType="Border">
@@ -243,9 +264,11 @@
                                            TextWrapping="Wrap"
                                            HorizontalAlignment="Left"
                                            VerticalAlignment="Center"
-                                           Foreground="#E5E5E5"
                                            FontSize="{Binding FontSize, Mode=TwoWay}"
                                            FontFamily="Verdana">
+                                    <TextBlock.Foreground>
+                                        <SolidColorBrush Color="{Binding Path=Theme.Foreground, Converter={StaticResource HexToColor}, Mode=OneWay}" />
+                                    </TextBlock.Foreground>
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Opacity" Value="1" />
@@ -271,16 +294,29 @@
                                            VerticalAlignment="Center"
                                            TextWrapping="Wrap"
                                            FontSize="{Binding SmallFontSize, Mode=TwoWay}"
-                                           Foreground="#5F6368"
-                                           FontFamily="Verdana" />
+                                           FontFamily="Verdana">
+                                    <TextBlock.Foreground>
+                                        <SolidColorBrush>
+                                            <SolidColorBrush.Color>
+                                                <MultiBinding Converter="{StaticResource AdaptiveHexToColor}">
+                                                    <Binding Path="Theme.Foreground" Mode="OneWay" />
+                                                    <Binding>
+                                                        <Binding.Source>
+                                                            <sys:Double>0.25</sys:Double>
+                                                        </Binding.Source>
+                                                    </Binding>
+                                                </MultiBinding>
+                                            </SolidColorBrush.Color>
+                                        </SolidColorBrush>
+                                    </TextBlock.Foreground>
+                                </TextBlock>
                             </WrapPanel>
                         </Grid>
                     </Border>
 
                     <Border Background="Transparent" Margin="0 0 0 -1">
-                        <Polygon x:Name="__popup_part_of_border"
-                                 Fill="#202124"
-                                 Stroke="#5F6368"
+                        <Polygon Fill="{Binding ElementName=__popup_border, Path=Background, Mode=OneWay}"
+                                 Stroke="{Binding ElementName=__popup_bottom_text, Path=Foreground, Mode=OneWay}"
                                  HorizontalAlignment="Center"
                                  StrokeThickness="1">
                             <Polygon.Points>
@@ -314,10 +350,14 @@
                           Width="{Binding CanclePopupIconSize, Mode=OneWay}"
                           Height="{Binding CanclePopupIconSize, Mode=OneWay}"
                           IsHitTestVisible="False"
-                          Stretch="Uniform"
-                          Fill="#70FF0000">
+                          Stretch="Uniform">
+                        <Path.Fill>
+                            <SolidColorBrush Color="{Binding ElementName=MainWindow, Path=DataContext.SelectedForeground, Mode=OneWay}"
+                                             Opacity="0.5" />
+                        </Path.Fill>
                         <Path.Effect>
-                            <DropShadowEffect Color="#90FF0000"
+                            <DropShadowEffect Color="{Binding ElementName=MainWindow, Path=DataContext.SelectedForeground, Mode=OneWay}"
+                                              Opacity="0.8"
                                               ShadowDepth="0"
                                               BlurRadius="4" />
                         </Path.Effect>
@@ -364,7 +404,6 @@
                 Visibility="{Binding IsPageTurnerShowed, Converter={StaticResource BooleanToVisibility}, Mode=OneWay}"
                 Background="Transparent">
             <comps:LiteSlider IsEnabled="{Binding IsScrollLocked, Converter={StaticResource ReverseBoolean}, Mode=OneWay}"
-                              ValueChanged="OnMoveValueChanged"
                               MinValue="0"
                               MaxValue="{Binding MaxPageTurnerValue, Mode=TwoWay}"
                               Value="{Binding PageTurnerValue, Mode=TwoWay}"
@@ -533,7 +572,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Grid>
+                <Grid Name="SettingsButtonContainer">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="auto" />
@@ -542,57 +581,22 @@
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
                     </Grid.ColumnDefinitions>
                     
-                    <TextBlock Name="__general"
-                               Style="{StaticResource optionsNameStyleUnderline}"
-                               Text="General"
-                               Grid.Column="0"
-                               Foreground="#92E492"
-                               Margin="18 0 10 0"/>
-                    <TextBlock Name="__translator"
-                               Style="{StaticResource optionsNameStyleUnderline}"
-                               Text="Translator"
-                               Grid.Column="1"/>
-                    <TextBlock Name="__font_style"
-                               Style="{StaticResource optionsNameStyleUnderline}"
-                               Text="Font style"
-                               Grid.Column="2" />
-                    <TextBlock Name="__text_margin"
-                               Style="{StaticResource optionsNameStyleUnderline}"
-                               Text="Text margin"
-                               Grid.Column="3" />
-                    <TextBlock Name="__text_spacing"
-                               Style="{StaticResource optionsNameStyleUnderline}"
-                               Text="Text spacing"
-                               Grid.Column="4" />
-                    <TextBlock Name="__color_set_1"
-                               Style="{StaticResource optionsNameStyleUnderline}"
-                               Text="Color set 1"
-                               Foreground="#E5E5E5"
-                               Grid.Column="6" />
-                    <TextBlock Name="__color_set_2"
-                               Style="{StaticResource optionsNameStyleUnderline}"
-                               Text="Color set 2"
-                               Grid.Column="7"
-                               Margin="9 0 18 0" />
+                    <TextBlock Style="{StaticResource optionsNameStyleUnderline}" Text="General" Grid.Column="0" Margin="18 0 10 0"/>
+                    <TextBlock Style="{StaticResource optionsNameStyleUnderline}" Text="Translator" Grid.Column="1"/>
+                    <TextBlock Style="{StaticResource optionsNameStyleUnderline}" Text="Font style" Grid.Column="2" />
+                    <TextBlock Style="{StaticResource optionsNameStyleUnderline}" Text="Text margin" Grid.Column="3" />
+                    <TextBlock Style="{StaticResource optionsNameStyleUnderline}" Text="Text spacing" Grid.Column="4" />
+                    <TextBlock Style="{StaticResource optionsNameStyleUnderline}" Text="Theme" Grid.Column="6" Margin="10 0 18 0" />
 
-                    <Border Grid.Column="0"
-                            Style="{StaticResource separatorBorder}" />
-                    <Border Grid.Column="1"
-                            Style="{StaticResource separatorBorder}" />
-                    <Border Grid.Column="2"
-                            Style="{StaticResource separatorBorder}" />
-                    <Border Grid.Column="3"
-                            Style="{StaticResource separatorBorder}" />
-                    <Border Grid.Column="4"
-                            Style="{StaticResource separatorBorder}" />
-                    <Border Grid.Column="5"
-                            Style="{StaticResource separatorBorder}" />
-                    <Border Grid.Column="6"
-                            Style="{StaticResource separatorBorder}" />
-                    
+                    <Border Grid.Column="0" Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="1" Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="2" Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="3" Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="4" Style="{StaticResource separatorBorder}" />
+                    <Border Grid.Column="5" Style="{StaticResource separatorBorder}" />
+
                 </Grid>
 
                 <Border Background="#5F6368"
@@ -602,8 +606,8 @@
                         Margin="4 0"
                         VerticalAlignment="Top" />
 
-                <Grid Margin="12" Grid.Row="1">
-                    <Grid Name="__general_grid" Visibility="Visible">
+                <Grid Name="SettingsDataContainer" Margin="12" Grid.Row="1">
+                    <Grid Visibility="Hidden">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
@@ -635,36 +639,13 @@
                                    Grid.Row="3"
                                    Grid.Column="1" />
 
-                        <comps:LiteCheckBox x:Name="__logoPreview"
-                                            CheckedValueChanged="OnLogoPreviewValueChanged"
-                                            HorizontalAlignment="Left"
-                                            Grid.Row="0"
-                                            Height="30"
-                                            Width="40" />
-
-                        <comps:LiteCheckBox x:Name="__adaptiveWordSpacing"
-                                            CheckedValueChanged="OnAdaptiveWordSpacingValueChanged"
-                                            Grid.Row="1"
-                                            HorizontalAlignment="Left"
-                                            Height="30"
-                                            Width="40" />
-
-                        <comps:LiteCheckBox x:Name="__adaptiveKerning"
-                                            CheckedValueChanged="OnAdaptiveKerningValueChanged"
-                                            Grid.Row="2"
-                                            HorizontalAlignment="Left"
-                                            Height="30"
-                                            Width="40" />
-
-                        <comps:LiteCheckBox x:Name="__autoCopySelectedText"
-                                            CheckedValueChanged="OnAutoCopySelectedTextValueChanged"
-                                            Grid.Row="3"
-                                            HorizontalAlignment="Left"
-                                            Height="30"
-                                            Width="40" />
+                        <comps:LiteCheckBox Checked="{Binding LogoPreview, Mode=TwoWay}" HorizontalAlignment="Left" Grid.Row="0" Height="30" Width="40" />
+                        <comps:LiteCheckBox Checked="{Binding AdaptiveWordSpacing, Mode=TwoWay}" HorizontalAlignment="Left" Grid.Row="1" Height="30" Width="40" />
+                        <comps:LiteCheckBox Checked="{Binding AdaptiveKerning, Mode=TwoWay}" HorizontalAlignment="Left" Grid.Row="2" Height="30" Width="40" />
+                        <comps:LiteCheckBox Checked="{Binding AutoCopySelectedText, Mode=TwoWay}" HorizontalAlignment="Left" Grid.Row="3" Height="30" Width="40" />
                     </Grid>
 
-                    <Grid Name="__translator_grid" Visibility="Hidden">
+                    <Grid Visibility="Hidden">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="auto" />
                             <ColumnDefinition Width="*" />
@@ -703,47 +684,14 @@
                                    Grid.Row="4"
                                    Grid.Column="1" />
 
-                        <comps:LiteCheckBox x:Name="__useTranslator"
-                                            CheckedValueChanged="OnUseTranslatorValueChanged"
-                                            Grid.Column="0"
-                                            HorizontalAlignment="Left"
-                                            Height="30"
-                                            Width="40" />
-
-                        <comps:LiteCheckBox x:Name="__useGoogleTranslate"
-                                            CheckedValueChanged="OnUseGoogleTranslateValueChanged"
-                                            Grid.Column="0"
-                                            Grid.Row="1"
-                                            HorizontalAlignment="Left"
-                                            Height="30"
-                                            Width="40" />
-
-                        <comps:LiteCheckBox x:Name="__useSpellChecker"
-                                            CheckedValueChanged="OnUseSpellCheckerValueChanged"
-                                            Grid.Column="0"
-                                            Grid.Row="2"
-                                            HorizontalAlignment="Left"
-                                            Height="30"
-                                            Width="40" />
-
-                        <comps:LiteCheckBox x:Name="__addPronunciation"
-                                            CheckedValueChanged="OnAddPronunciationValueChanged"
-                                            Grid.Column="0"
-                                            Grid.Row="3"
-                                            HorizontalAlignment="Left"
-                                            Height="30"
-                                            Width="40" />
-
-                        <comps:LiteCheckBox x:Name="__showSynonyms"
-                                            CheckedValueChanged="OnShowSynonymsValueChanged"
-                                            Grid.Column="0"
-                                            Grid.Row="4"
-                                            HorizontalAlignment="Left"
-                                            Height="30"
-                                            Width="40" />
+                        <comps:LiteCheckBox Checked="{Binding UseTranslator, Mode=TwoWay}" HorizontalAlignment="Left" Grid.Column="0" Height="30" Width="40" />
+                        <comps:LiteCheckBox Checked="{Binding UseGoogleTranslate, Mode=TwoWay}" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="1" Height="30" Width="40" />
+                        <comps:LiteCheckBox Checked="{Binding UseSpellChecker, Mode=TwoWay}" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="2" Height="30" Width="40" />
+                        <comps:LiteCheckBox Checked="{Binding AddPronunciation, Mode=TwoWay}" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="3" Height="30" Width="40" />
+                        <comps:LiteCheckBox Checked="{Binding ShowSynonyms, Mode=TwoWay}" HorizontalAlignment="Left" Grid.Column="0" Grid.Row="4" Height="30" Width="40" />
                     </Grid>
                     
-                    <Grid Name="__font_style_grid" Visibility="Hidden">
+                    <Grid Visibility="Hidden">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="42" />
                             <RowDefinition Height="42" />
@@ -751,41 +699,49 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <TextBlock MouseUp="OnTextStyleReset"
-                                   Text="Reset Font style"
+                        <TextBlock Text="Reset"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Top"
-                                   Style="{StaticResource optionsNameStyleUnderline}"/>
+                                   Style="{StaticResource optionsNameStyleUnderline}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseUp">
+                                    <i:InvokeCommandAction Command="{Binding OnTextStyleResetCommand}"
+                                                           PassEventArgsToCommand="True" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBlock>
 
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <comps:LiteSlider x:Name="__fontSize"
-                                              ValueChanged="OnFontSizeChanged"
-                                              Width="320"
-                                              MinValue="1"
-                                              MaxValue="100"
-                                              UseInteger="True" />
-                            <TextBlock Text="Font Size"
-                                       Style="{StaticResource optionsNameStyle}" />
+                            <comps:LiteSlider Value="{Binding FontSize, Mode=TwoWay}" Width="320" MinValue="1" MaxValue="100" UseInteger="True" />
+                            <TextBlock Text="Font Size" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <ComboBox x:Name="__fontFamily"
-                                      Width="160"
-                                      SelectionChanged="OnFontFamilyChanged" />
-                            <TextBlock Text="Font Family"
-                                       Style="{StaticResource optionsNameStyle}" />
+                            <ComboBox SelectedIndex="{Binding FontFamily, Mode=TwoWay}" Width="160">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Loaded">
+                                        <i:InvokeCommandAction Command="{Binding OnFontFamilyLoadedAsyncCommand}"
+                                                               PassEventArgsToCommand="True" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                            <TextBlock Text="Font Family" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <ComboBox x:Name="__fontWeight"
-                                      Width="160"
-                                      SelectionChanged="OnFontWeightChanged" />
-                            <TextBlock Text="Font Weight"
-                                       Style="{StaticResource optionsNameStyle}" />
+                            <ComboBox SelectedIndex="{Binding FontWeight, Mode=TwoWay}" Width="160">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Loaded">
+                                        <i:InvokeCommandAction Command="{Binding OnFontWeightLoadedAsyncCommand}"
+                                                               PassEventArgsToCommand="True" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
+                            <TextBlock Text="Font Weight" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
                     </Grid>
 
-                    <Grid Name="__text_margin_grid" Visibility="Hidden">
+                    <Grid Visibility="Hidden">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="42" />
                             <RowDefinition Height="42" />
@@ -793,50 +749,35 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <TextBlock MouseUp="OnTextMarginReset"
-                                   Text="Reset Font margin"
+                        <TextBlock Text="Reset"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Top"
-                                   Style="{StaticResource optionsNameStyleUnderline}"/>
+                                   Style="{StaticResource optionsNameStyleUnderline}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseUp">
+                                    <i:InvokeCommandAction Command="{Binding OnTextMarginResetCommand}"
+                                                           PassEventArgsToCommand="True" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBlock>
 
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <comps:LiteSlider x:Name="__areaWidth"
-                                              ValueChanged="OnAreaWidthChanged"
-                                              MinValue="20"
-                                              Width="320"
-                                              Step="10"
-                                              MaxValue="1920"
-                                              UseInteger="True" />
-                            <TextBlock Text="Left And Right Offset"
-                                       Style="{StaticResource optionsNameStyle}" />
+                            <comps:LiteSlider Value="{Binding AreaWidth, Mode=TwoWay}" MinValue="20" Width="320" Step="10" MaxValue="1920" UseInteger="True" />
+                            <TextBlock Text="Area Width" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <comps:LiteSlider x:Name="__horizontalOffset"
-                                              ValueChanged="OnHorizontalOffsetChanged"
-                                              MinValue="-800"
-                                              Width="320"
-                                              Step="10"
-                                              MaxValue="800"
-                                              UseInteger="True" />
-                            <TextBlock Text="Horizontal Offset"
-                                       Style="{StaticResource optionsNameStyle}" />
+                            <comps:LiteSlider Value="{Binding HorizontalOffset, Mode=TwoWay}" MinValue="-800" Width="320" Step="10" MaxValue="800" UseInteger="True" />
+                            <TextBlock Text="Horizontal Offset" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <comps:LiteSlider x:Name="__verticalOffset"
-                                              ValueChanged="OnVerticalOffsetChanged"
-                                              MinValue="-800"
-                                              Width="320"
-                                              Step="10"
-                                              MaxValue="800"
-                                              UseInteger="True" />
-                            <TextBlock Text="Vertical Offset"
-                                       Style="{StaticResource optionsNameStyle}" />
+                            <comps:LiteSlider Value="{Binding VerticalOffset, Mode=TwoWay}" MinValue="-800" Width="320" Step="10" MaxValue="800" UseInteger="True" />
+                            <TextBlock Text="Vertical Offset" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
                     </Grid>
 
-                    <Grid Name="__text_spacing_grid" Visibility="Hidden">
+                    <Grid Visibility="Hidden">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="42" />
                             <RowDefinition Height="42" />
@@ -845,64 +786,42 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <TextBlock MouseUp="OnTextSpacingReset"
-                                   Text="Reset Font spacing"
+                        <TextBlock Text="Reset"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Top"
-                                   Style="{StaticResource optionsNameStyleUnderline}"/>
+                                   Style="{StaticResource optionsNameStyleUnderline}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseUp">
+                                    <i:InvokeCommandAction Command="{Binding OnTextSpacingResetCommand}"
+                                                           PassEventArgsToCommand="True" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBlock>
 
                         <StackPanel Grid.Row="0" Orientation="Horizontal">
-                            <comps:LiteSlider x:Name="__indent"
-                                              ValueChanged="OnIndentChanged"
-                                              MinValue="0"
-                                              Width="320"
-                                              Step="0.1"
-                                              MaxValue="150"
-                                              UseInteger="False" />
-                            <TextBlock Text="Indent"
-                                       Style="{StaticResource optionsNameStyle}" />
+                            <comps:LiteSlider Value="{Binding Indent, Mode=TwoWay}" MinValue="0" Width="320" Step="0.1" MaxValue="150" UseInteger="False" />
+                            <TextBlock Text="Indent" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal">
-                            <comps:LiteSlider x:Name="__kerning"
-                                              ValueChanged="OnKerningChanged"
-                                              MinValue="-10"
-                                              Width="320"
-                                              LazyLoading="True"
-                                              MaxValue="60"
-                                              Step="0.1"
-                                              UseInteger="False" />
-                            <TextBlock Text="Kerning"
-                                       Style="{StaticResource optionsNameStyle}" />
+                            <comps:LiteSlider Value="{Binding Kerning, Mode=TwoWay}" MinValue="-10" Width="320" LazyLoading="True" MaxValue="60" Step="0.1" UseInteger="False" />
+                            <TextBlock Text="Kerning" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <comps:LiteSlider x:Name="__wordSpacing"
-                                              ValueChanged="OnWordSpacingChanged"
-                                              MinValue="0"
-                                              Width="320"
-                                              MaxValue="120"
-                                              Step="0.1"
-                                              UseInteger="False" />
-                            <TextBlock Text="Word Spacing"
-                                       Style="{StaticResource optionsNameStyle}" />
+                            <comps:LiteSlider Value="{Binding WordSpacing, Mode=TwoWay}" MinValue="0" Width="320" MaxValue="120" Step="0.1" UseInteger="False" />
+                            <TextBlock Text="Word Spacing" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="3" Orientation="Horizontal">
-                            <comps:LiteSlider x:Name="__lineSpacing"
-                                              ValueChanged="OnLineSpacingChanged"
-                                              MinValue="0"
-                                              Width="320"
-                                              MaxValue="120"
-                                              Step="0.1"
-                                              UseInteger="False" />
-                            <TextBlock Text="Line Spacing"
-                                       Style="{StaticResource optionsNameStyle}" />
+                            <comps:LiteSlider Value="{Binding LineSpacing, Mode=TwoWay}" MinValue="0" Width="320" MaxValue="120" Step="0.1" UseInteger="False" />
+                            <TextBlock Text="Line Spacing" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
                     </Grid>
 
-                    <Grid Name="__color_set_grid" Visibility="Hidden">
+                    <Grid Visibility="Hidden">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="42" />
                             <RowDefinition Height="42" />
                             <RowDefinition Height="42" />
                             <RowDefinition Height="42" />
@@ -910,75 +829,91 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <StackPanel VerticalAlignment="Top"
-                                    HorizontalAlignment="Right"
-                                    Grid.RowSpan="2">
-                            <TextBlock MouseUp="OnColorSetReset"
-                                       Text="Reset Color set"
-                                       Margin="0"
-                                       HorizontalAlignment="Stretch"
-                                       TextAlignment="Right"
-                                       Style="{StaticResource optionsNameStyleUnderline}"/>
-                            <TextBlock MouseUp="OnColorSetSave"
-                                       Text="Save Color set"
-                                       Margin="0 15 0 0"
-                                       HorizontalAlignment="Stretch"
-                                       TextAlignment="Right"
-                                       Style="{StaticResource optionsNameStyleUnderline}"/>
-                        </StackPanel>
-                        
-                        <StackPanel Orientation="Horizontal" Grid.RowSpan="2">
-                            <StackPanel Orientation="Horizontal">
-                                <comps:LiteColorPicker x:Name="__background"
-                                                       SelecteColorChanged="OnBackgroundColorChanged"
-                                                       Height="30" Width="80" />
-                                <TextBlock Text="Background"
-                                           Style="{StaticResource optionsNameStyle}" />
-                            </StackPanel>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                            <StackPanel Orientation="Horizontal" Margin="30 0">
-                                <comps:LiteColorPicker x:Name="__foreground"
-                                                       SelecteColorChanged="OnForegroundColorChanged"
-                                                       Height="30" Width="80" />
-                                <TextBlock Text="Text Color"
-                                           Style="{StaticResource optionsNameStyle}" />
-                            </StackPanel>
-
-                            <StackPanel Orientation="Horizontal">
-                                <comps:LiteColorPicker x:Name="__selectedForeground"
-                                                       SelecteColorChanged="OnSelectedForegroundColorChanged"
-                                                       Height="30" Width="80" />
-                                <TextBlock Text="Selected Text Color"
-                                           Style="{StaticResource optionsNameStyle}" />
-                            </StackPanel>
-                        </StackPanel>
-                        
-                        <StackPanel Orientation="Horizontal" Grid.Row="2">
-                            <comps:LiteSlider x:Name="__hoveredTextTransparency"
-                                              ValueChanged="OnHoveredTextTransparencyChanged"
-                                              MinValue="0"
-                                              Width="320"
-                                              Step="0.01"
-                                              MaxValue="1"
-                                              UseInteger="False" />
-                            <TextBlock Text="Hovered Text Transparency"
-                                        Style="{StaticResource optionsNameStyle}" />
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Center">
+                            <ComboBox Width="160" SelectedIndex="{Binding ThemeIndex, Mode=TwoWay}">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="Loaded">
+                                        <i:InvokeCommandAction Command="{Binding OnThemeLoadedAsyncCommand}"
+                                                               PassEventArgsToCommand="True" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
+                            </ComboBox>
                         </StackPanel>
 
-                        <StackPanel Orientation="Horizontal" Grid.Row="3">
-                            <comps:LiteSlider x:Name="__inactiveTextTransparency"
-                                              ValueChanged="OnInactiveTextTransparencyChanged"
-                                              MinValue="0"
-                                              Width="320"
-                                              Step="0.01"
-                                              MaxValue="1"
-                                              UseInteger="False" />
-                            <TextBlock Text="Inactive Text Transparency"
-                                        Style="{StaticResource optionsNameStyle}" />
+                        <TextBlock Text="New Theme" Style="{StaticResource optionsNameStyleUnderline}" HorizontalAlignment="Right">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseUp">
+                                    <i:InvokeCommandAction Command="{Binding OnNewThemeClickedCommand}"
+                                                           PassEventArgsToCommand="True" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBlock>
+
+                        <TextBlock Text="Delete Theme" Style="{StaticResource optionsNameStyleUnderline}" Grid.Column="2" HorizontalAlignment="Left">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseUp">
+                                    <i:InvokeCommandAction Command="{Binding OnDeleteThemeClickedCommand}"
+                                                           PassEventArgsToCommand="True" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </TextBlock>
+
+                        <StackPanel Orientation="Horizontal" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Right">
+                            <TextBlock Text="Background" Style="{StaticResource optionsNameStyle}" Margin="0 0 10 0" />
+                            <comps:LiteColorPicker SelectedColor="{Binding Background, Mode=TwoWay}" Height="30" Width="80" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+                            <TextBlock Text="Image" Style="{StaticResource optionsNameStyle}" Margin="0 0 10 0" />
+                            <ComboBox Width="160" SelectedIndex="{Binding CoverIndex, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, IsAsync=True}">
+                                <TextBlock Text="None" FontFamily="Verdana" />
+                                <TextBlock Text="Wall Theme" FontFamily="Verdana" />
+                                <TextBlock Text="Moon Theme" FontFamily="Verdana" />
+                                <TextBlock Text="Frost Theme" FontFamily="Verdana" />
+                                <TextBlock Text="Land Theme" FontFamily="Verdana" />
+                                <TextBlock Text="Field Theme" FontFamily="Verdana" />
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Right">
+                            <TextBlock Text="Image Opacity" Style="{StaticResource optionsNameStyle}" Margin="0 0 10 0" />
+                            <comps:LiteSlider Value="{Binding CoverOpacity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MinValue="0" Width="160" Step="0.01" MaxValue="1" UseInteger="False" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.RowSpan="2">
+                            <comps:LiteColorPicker SelectedColor="{Binding Foreground, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="30" Width="80" />
+                            <TextBlock Text="Foreground" Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" HorizontalAlignment="Center">
+                            <comps:LiteColorPicker SelectedColor="{Binding SelectedForeground, Mode=TwoWay}" Height="30" Width="80" />
+                            <TextBlock Text="Selected Foreground" Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="2">
+                            <comps:LiteSlider Value="{Binding HoveredTextOpacity, Mode=TwoWay}" MinValue="0" Width="160" Step="0.01" MaxValue="1" UseInteger="False" />
+                            <TextBlock Text="Hovered Text Opacity" Style="{StaticResource optionsNameStyle}" />
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.ColumnSpan="2">
+                            <comps:LiteSlider Value="{Binding InactiveTextOpacity, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" MinValue="0" Width="160" Step="0.01" MaxValue="1" UseInteger="False" />
+                            <TextBlock Text="Inactive Text Opacity" Style="{StaticResource optionsNameStyle}" />
                         </StackPanel>
                     </Grid>
                 </Grid>
-               
+
+                <Border Background="#5F6368"
+                        Height="1"
+                        CornerRadius="15"
+                        Grid.Row="1"
+                        Margin="4 0"
+                        VerticalAlignment="Bottom" />
             </Grid>
         </Border>
 
@@ -1079,14 +1014,16 @@
                 </TextBlock>
 
                 <TextBlock Name="__temp_logo_name"
+                           FontSize="32"
+                           Margin="0 -50 50 0"
                            HorizontalAlignment="Right"
                            Grid.Row="3"
-                           Margin="0 -50 50 0"
-                           FontSize="32"
+                           TextAlignment="Right"
                            Foreground="#E5E5E5"
                            Opacity="0"
-                           FontWeight="Bold"
-                           Text=".txt Edititon" />
+                           FontWeight="Bold">
+                    EPUB Support
+                </TextBlock>
             </StackPanel>
         </Grid>
     </Grid>

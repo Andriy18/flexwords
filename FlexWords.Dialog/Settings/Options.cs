@@ -1,8 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
 using FlexWords.Entities.Structs;
-using Newtonsoft.Json;
-using FlexWords.Dialog.Helpers;
 using FlexWords.Dialog.Settings;
+using Newtonsoft.Json;
 
 namespace FlexWords.Dialog
 {
@@ -29,38 +29,6 @@ namespace FlexWords.Dialog
             set
             {
                 GeneralOptions.Default.CaptureBkmark = value?.ToString() ?? null;
-                GeneralOptions.Default.Save();
-            }
-        }
-
-        public static Workspace Workspace1
-        {
-            get => GetWorkspace(0);
-            set => SetWorkspace(0, value);
-        }
-
-        public static Workspace Workspace2
-        {
-            get => GetWorkspace(1);
-            set => SetWorkspace(1, value);
-        }
-
-        public static int LastWorkspaceIndex
-        {
-            get => GeneralOptions.Default.LastWorkspaceIndex;
-            set
-            {
-                GeneralOptions.Default.LastWorkspaceIndex = value;
-                GeneralOptions.Default.Save();
-            }
-        }
-
-        public static bool SetDefaultValues
-        {
-            get => GeneralOptions.Default.SetDefaultValues;
-            set
-            {
-                GeneralOptions.Default.SetDefaultValues = value;
                 GeneralOptions.Default.Save();
             }
         }
@@ -277,10 +245,10 @@ namespace FlexWords.Dialog
 
         public static string LastUsedBook
         {
-            get => GeneralOptions.Default.LastBookPath;
+            get => GeneralOptions.Default.LastUsedBook;
             set
             {
-                GeneralOptions.Default.LastBookPath = value;
+                GeneralOptions.Default.LastUsedBook = value;
                 GeneralOptions.Default.Save();
             }
         }
@@ -294,80 +262,111 @@ namespace FlexWords.Dialog
                 GeneralOptions.Default.Save();
             }
         }
+
+        public static int ThemeIndex
+        {
+            get => GeneralOptions.Default.ThemeIndex;
+            set
+            {
+                value = Math.Clamp(value, 0, int.MaxValue);
+
+                GeneralOptions.Default.ThemeIndex = value;
+                GeneralOptions.Default.Save();
+            }
+        }
+
+        public static ThemeSet[] Themes
+        {
+            get
+            {
+                var themes = new List<ThemeSet>();
+                string data = GeneralOptions.Default.Themes;
+
+                try
+                {
+                    var workspaces = JsonConvert.DeserializeObject<ThemeSet[]>(data);
+
+                    if (workspaces is not null && workspaces.Length > 0)
+                    {
+                        themes.AddRange(workspaces);
+                    }
+                }
+                catch
+                {
+                    data = JsonConvert.SerializeObject(Array.Empty<ThemeSet>());
+                    GeneralOptions.Default.Themes = data;
+                    GeneralOptions.Default.Save();
+                }
+
+                return themes.ToArray();
+            }
+        }
     }
 
     public static partial class Options
     {
-        // helping code is here
-
-        private static Workspace GetWorkspace(int index)
+        public static ThemeSet GetTheme()
         {
-            string data = GeneralOptions.Default.Workspaces;
+            ThemeSet[] themes = Themes;
 
-            if (string.IsNullOrEmpty(data) ||
-                JsonConvert.DeserializeObject<Workspace[]>(data) is not Workspace[] workspaces)
+            if (themes.Length is 0)
             {
-               workspaces = new Workspace[2]
-               {
-                    Workspace.Default,
-                    Workspace.Default
-               };
+                ThemeIndex = 0;
+                themes = AddTheme();
 
-                data = JsonConvert.SerializeObject(workspaces);
-
-                GeneralOptions.Default.Workspaces = data;
-                GeneralOptions.Default.Save();
+                return themes[ThemeIndex];
             }
 
-            return workspaces[index];
-        }
-
-        private static void SetWorkspace(int index, Workspace workspace)
-        {
-            if (index == 0)
+            if (themes.Length <= ThemeIndex)
             {
-                var workspaces = new Workspace[2]
-                {
-                    workspace,
-                    GetWorkspace(1),
-                };
+                ThemeIndex = themes.Length - 1;
 
-                GeneralOptions.Default.Workspaces = JsonConvert.SerializeObject(workspaces);
-                GeneralOptions.Default.Save();
+                return themes[ThemeIndex];
             }
-            else if (index == 1)
+
+            return themes[ThemeIndex];
+        }
+
+        public static ThemeSet[] AddTheme()
+        {
+            var themes = new List<ThemeSet>(Themes) { ThemeSet.Default };
+            string data = JsonConvert.SerializeObject(themes.ToArray());
+
+            GeneralOptions.Default.Themes = data;
+            GeneralOptions.Default.Save();
+
+            return themes.ToArray();
+        }
+
+        public static ThemeSet[] DeleteTheme()
+        {
+            var themes = new List<ThemeSet>(Themes);
+
+            if (themes.Count is 0 || themes.Count <= ThemeIndex)
             {
-                var workspaces = new Workspace[2]
-                {
-                    GetWorkspace(0),
-                    workspace,
-                };
-
-                GeneralOptions.Default.Workspaces = JsonConvert.SerializeObject(workspaces);
-                GeneralOptions.Default.Save();
+                return themes.ToArray();
             }
+
+            themes.Remove(themes[ThemeIndex]);
+            string data = JsonConvert.SerializeObject(themes.ToArray());
+
+            GeneralOptions.Default.Themes = data;
+            GeneralOptions.Default.Save();
+
+            return themes.ToArray();
         }
 
-        public static void SetDefault1()
+        public static void UpdateTheme(ThemeSet theme)
         {
-            FontSize = 21;
-            FontFamily = FontFamilyHelper.GetIndex("Verdana");
-            FontWeight = FontWeightHelper.GetIndex(FontWeights.Normal);
-        }
+            var themes = new List<ThemeSet>(Themes);
 
-        public static void SetDefault2()
-        {
-            HorizontalOffset = 0;
-            VerticalOffset = 0;
-            AreaWidth = 600;
-        }
+            if (themes.Count is 0 || themes.Count <= ThemeIndex) return;
 
-        public static void SetDefault3()
-        {
-            Indent = 45;
-            Kerning = 4;
-            WordSpacing = 15;
-            LineSpacing = 8;
+            themes[ThemeIndex] = theme;
+            string data = JsonConvert.SerializeObject(themes.ToArray());
+
+            GeneralOptions.Default.Themes = data;
+            GeneralOptions.Default.Save();
         }
     }
 }

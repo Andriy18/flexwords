@@ -23,7 +23,7 @@ namespace FlexWords.Dialog.Handlers
             }
         }
 
-        public Workspace Readspace
+        public ThemeSet Readspace
         {
             set
             {
@@ -48,7 +48,7 @@ namespace FlexWords.Dialog.Handlers
             CalculatedWidth = MeasureCore(ControlConstants.MeasureSize).Width;
         }
 
-        public void SetForeground(Workspace workspace, bool selected = false)
+        public void SetForeground(ThemeSet workspace, bool selected = false)
         {
             if (selected) Foreground = workspace.SelectedForeground.ToBrush();
             else Foreground = workspace.Foreground.ToBrush();

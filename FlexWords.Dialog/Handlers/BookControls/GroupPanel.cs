@@ -11,7 +11,7 @@ namespace FlexWords.Dialog.Handlers
         public int Index { get; set; }
         public int GroupIndex { get; set; }
 
-        public Workspace Readspace
+        public ThemeSet Readspace
         {
             set
             {
@@ -51,7 +51,7 @@ namespace FlexWords.Dialog.Handlers
                 Background = Brushes.DarkBlue;
         }
 
-        public void Add(WordPanel panel, int index, int wordIndex, Workspace workspace)
+        public void Add(WordPanel panel, int index, int wordIndex, ThemeSet workspace)
         {
             panel.Index = index;
             panel.WordIndex = wordIndex;

@@ -9,16 +9,27 @@
              Background="Transparent"
              Height="50"
              Width="200"
+             Name="MainWindow"
              Loaded="OnLiteColorPickerLoaded">
     <Border Name="__border"
-            BorderBrush="#E5E5E5"
             Background="#242424"
             BorderThickness="1"
             CornerRadius="25"
             Padding="2">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="BorderBrush" Value="#E5E5E5" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="BorderBrush" Value="#90E5E5E5" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        
         <Grid>
             <xctk:ColorPicker Name="__color_picker"
-                              SelectedColorChanged="OnSelectedColorChanged"
+                              SelectedColor="{Binding Path=SelectedColor, ElementName=MainWindow, Mode=TwoWay}"
                               ColorMode="ColorCanvas"
                               Visibility="Hidden" />
 
@@ -26,16 +37,20 @@
                     CornerRadius="22">
                 <Border Name="__main_border"
                         CornerRadius="22"
-                        BorderThickness="0"
-                        Background="#35363A">
+                        BorderThickness="0">
+                    <Border.Background>
+                        <SolidColorBrush Color="{Binding Path=SelectedColor, ElementName=MainWindow, Mode=OneWay}" />
+                    </Border.Background>
                     <TextBlock x:Name="__text"
                                FontFamily="Verdana"
                                FontWeight="Bold"
                                FontSize="23"
-                               Foreground="#E5E5E5"
+                               Text="{Binding Path=SelectedColor, ElementName=MainWindow, Converter={StaticResource ColorToHex}, Mode=OneWay}"
                                TextAlignment="Center"
                                VerticalAlignment="Center">
-                        #343434
+                        <TextBlock.Foreground>
+                            <SolidColorBrush Color="{Binding Path=SelectedColor, ElementName=MainWindow, Converter={StaticResource ReverseColor}, Mode=OneWay}" />
+                        </TextBlock.Foreground>
                     </TextBlock>
                 </Border>
             </Border>

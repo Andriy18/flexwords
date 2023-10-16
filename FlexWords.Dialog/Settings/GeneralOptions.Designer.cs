@@ -26,24 +26,12 @@ namespace FlexWords.Dialog.Settings {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LastBookPath {
+        public string LastUsedBook {
             get {
-                return ((string)(this["LastBookPath"]));
+                return ((string)(this["LastUsedBook"]));
             }
             set {
-                this["LastBookPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Workspaces {
-            get {
-                return ((string)(this["Workspaces"]));
-            }
-            set {
-                this["Workspaces"] = value;
+                this["LastUsedBook"] = value;
             }
         }
         
@@ -92,18 +80,6 @@ namespace FlexWords.Dialog.Settings {
             }
             set {
                 this["AdaptiveKerning"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int LastWorkspaceIndex {
-            get {
-                return ((int)(this["LastWorkspaceIndex"]));
-            }
-            set {
-                this["LastWorkspaceIndex"] = value;
             }
         }
         
@@ -229,18 +205,6 @@ namespace FlexWords.Dialog.Settings {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool SetDefaultValues {
-            get {
-                return ((bool)(this["SetDefaultValues"]));
-            }
-            set {
-                this["SetDefaultValues"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string CaptureBkmark {
             get {
@@ -332,6 +296,30 @@ namespace FlexWords.Dialog.Settings {
             }
             set {
                 this["LastUsedFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Themes {
+            get {
+                return ((string)(this["Themes"]));
+            }
+            set {
+                this["Themes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int ThemeIndex {
+            get {
+                return ((int)(this["ThemeIndex"]));
+            }
+            set {
+                this["ThemeIndex"] = value;
             }
         }
     }

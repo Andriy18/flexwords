@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -12,37 +11,24 @@ namespace FlexWords.Dialog.Controls.Components
     public partial class LiteColorPicker : UserControl
     {
         public static readonly DependencyProperty SelectedColorProperty =
-            DependencyProperty.RegisterAttached(
+            DependencyProperty.Register(
                 nameof(SelectedColor),
                 typeof(Color),
-                typeof(LiteColorPicker));
-
-        public static readonly RoutedEvent SelecteColorChangedRoutedEvent =
-           EventManager.RegisterRoutedEvent(
-               nameof(SelecteColorChanged),
-               RoutingStrategy.Direct,
-               typeof(EventHandler<RoutedEventArgs>),
-               typeof(LiteColorPicker));
-
-        public event RoutedEventHandler SelecteColorChanged
-        {
-            add { AddHandler(SelecteColorChangedRoutedEvent, value); }
-            remove { RemoveHandler(SelecteColorChangedRoutedEvent, value); }
-        }
+                typeof(LiteColorPicker),
+                new FrameworkPropertyMetadata(default(Color),
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public Color SelectedColor
         {
             get => (Color)GetValue(SelectedColorProperty);
             set
             {
-                Color oldColor = (Color)GetValue(SelectedColorProperty);
+                Color oldValue = (Color)GetValue(SelectedColorProperty);
+                Color newValue = value;
 
-                if (oldColor == value) return;
+                if (oldValue == newValue) return;
 
                 SetValue(SelectedColorProperty, value);
-                RaiseEvent(new RoutedEventArgs(SelecteColorChangedRoutedEvent));
-
-                if (_updateColor) __color_picker.SelectedColor = value;
             }
         }
 
@@ -51,50 +37,26 @@ namespace FlexWords.Dialog.Controls.Components
             InitializeComponent();
         }
 
-        private void OnSelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue.HasValue)
+            if (e.Property == SelectedColorProperty)
             {
-                __main_border.Background = new SolidColorBrush(e.NewValue.Value);
-                __text.Foreground = e.NewValue.Value.GetBrushReverse();
-                __main_border.BorderBrush = __text.Foreground.Clone();
-                __text.Text = __main_border.Background.ToHex();
-
-                if (SelectedColor != e.NewValue.Value)
-                {
-                    _updateColor = false;
-                    SelectedColor = e.NewValue.Value;
-                    _updateColor = true;
-                }
-
-                __text.FontSize = MeasureHelper.GetBestFontSize(__text.Text, __main_border.ActualWidth, __main_border.ActualHeight, 0.8);
+                UpdateTextSize((Color)e.NewValue);
             }
-        }
-    }
 
-    public partial class LiteColorPicker
-    {
-        private bool _updateColor = true;
+            base.OnPropertyChanged(e);
+        }
+
+        private void UpdateTextSize(Color color)
+        {
+            __text.FontSize = MeasureHelper.GetBestFontSize(color.ToHex(), __main_border.ActualWidth, __main_border.ActualHeight, 0.8);
+        }
+
         private bool _clicked = false;
 
         private void OnLiteColorPickerLoaded(object sender, RoutedEventArgs e)
         {
-            __color_picker.SelectedColor = SelectedColor;
-            RaiseEvent(new RoutedEventArgs(SelecteColorChangedRoutedEvent));
-        }
-
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            __border.BorderBrush.Opacity = 1;
-
-            base.OnMouseLeave(e);
-        }
-
-        protected override void OnMouseEnter(MouseEventArgs e)
-        {
-            __border.BorderBrush.Opacity = 0.6;
-
-            base.OnMouseEnter(e);
+            UpdateTextSize(SelectedColor);
         }
 
         protected override void OnMouseRightButtonUp(MouseButtonEventArgs e)

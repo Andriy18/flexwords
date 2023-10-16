@@ -41,8 +41,8 @@
                 { EpubExt, "#8ABA20" },
                 { PdfExt, "#F15B48" },
                 { DocxExt, "#185ABD" },
-                { "Driver", "#E1E3E6" },
-                { "Folder", "#FFDA72" },
+                { "Driver", "#505254" },
+                { "Folder", "#C4992D" },
             };
         }
     }

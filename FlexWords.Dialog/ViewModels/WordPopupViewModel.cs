@@ -22,7 +22,7 @@ namespace FlexWords.Dialog.ViewModels
         private readonly Dispatcher _dispatcher;
         private readonly FlexWordsDialog _dialog;
         private readonly WordPanel _wordPanel;
-        private readonly Workspace _workspace;
+        private readonly ThemeSet _workspace;
         private readonly string _text;
 
         private bool _showSynonyms;
@@ -164,6 +164,10 @@ namespace FlexWords.Dialog.ViewModels
         {
             get => _middleRow;
             set => SetProperty(ref _middleRow, value);
+        }
+        public ThemeSet Theme
+        {
+            get => _workspace;
         }
 
         private void OnPlayAudio(object sender, MouseButtonEventArgs e)

@@ -8,6 +8,7 @@
              Background="Transparent"
              Width="200"
              Height="20"
+             Name="MainWindow"
              Loaded="OnLiteSliderLoaded">
     <Border Name="__border"
             BorderBrush="#E5E5E5"
@@ -22,8 +23,8 @@
                     BorderThickness="0"
                     Width="24"
                     CornerRadius="7"
-                    Margin="45 0 0 0"
                     Background="#E5E5E5"
+                    Margin="{Binding Path=ScrollMargin, ElementName=MainWindow, Mode=TwoWay}"
                     HorizontalAlignment="Left">
                 <TextBlock Name="__text"
                            Foreground="#2E2E2E"

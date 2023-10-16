@@ -34,7 +34,7 @@
         </Style>
 
         <Style x:Key="defaultText" TargetType="TextBlock">
-            <Setter Property="Foreground" Value="#4B4C52" />
+            <Setter Property="Foreground" Value="#E5E5E5" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="FontFamily" Value="Verdana" />
             <Setter Property="TextTrimming" Value="CharacterEllipsis" />

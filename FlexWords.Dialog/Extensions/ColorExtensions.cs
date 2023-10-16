@@ -92,6 +92,18 @@ namespace FlexWords.Dialog.Extensions
             return luminance < 128;
         }
 
+        public static Color AdaptiveAdjustBrightness(this Color color, double factor)
+        {
+            factor = Math.Clamp(factor, 0, 1);
+
+            if (color.IsColorDark())
+            {
+                return color.AdjustBrightness(factor);
+            }
+
+            return color.AdjustBrightness(-factor);
+        }
+
         public static Brush AdaptiveAdjustBrightness(this Brush brush, double factor)
         {
             factor = Math.Clamp(factor, 0, 1);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -7,38 +6,27 @@ namespace FlexWords.Dialog.Controls.Components
 {
     public partial class LiteCheckBox : UserControl
     {
+        private bool _clicked = false;
+
         public static readonly DependencyProperty CheckedProperty =
-            DependencyProperty.RegisterAttached(
+            DependencyProperty.Register(
                 nameof(Checked),
                 typeof(bool),
                 typeof(LiteCheckBox),
-                new PropertyMetadata(false));
+                new FrameworkPropertyMetadata(default(bool),
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public static readonly RoutedEvent CheckedValueRoutedEvent =
-            EventManager.RegisterRoutedEvent(
-                nameof(CheckedValueChanged),
-                RoutingStrategy.Direct,
-                typeof(EventHandler<RoutedEventArgs>),
-                typeof(LiteCheckBox));
-
-        public event RoutedEventHandler CheckedValueChanged
-        {
-            add { AddHandler(CheckedValueRoutedEvent, value); }
-            remove { RemoveHandler(CheckedValueRoutedEvent, value); }
-        }
         public bool Checked
         {
             get => (bool)GetValue(CheckedProperty);
             set
             {
                 bool oldValue = (bool)GetValue(CheckedProperty);
+                bool newValue = value;
 
-                if (oldValue == value) return;
+                if (oldValue == newValue) return;
 
                 SetValue(CheckedProperty, value);
-                RaiseEvent(new RoutedEventArgs(CheckedValueRoutedEvent));
-
-                if (_updateValue) SetCheckBoxValue(value);
             }
         }
 
@@ -47,52 +35,34 @@ namespace FlexWords.Dialog.Controls.Components
             InitializeComponent();
         }
 
-        public void SetCheckBoxValue(bool newValue)
+        private void UpdateCheckBox(bool newValue)
         {
             double newLeft = newValue ? (__internal_border.ActualWidth - __slider.ActualWidth) : 0;
 
             __slider.Background.Opacity = newValue ? 1.0 : 0.26;
             __slider.Margin = new Thickness(newLeft, 0, 0, 0);
-
-            if (Checked != newValue)
-            {
-                _updateValue = false;
-                Checked = newValue;
-                _updateValue = true;
-            }
         }
-    }
 
-    public partial class LiteCheckBox
-    {
-        private bool _clicked = false;
-        private bool _updateValue = true;
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (e.Property == CheckedProperty)
+            {
+                UpdateCheckBox((bool)e.NewValue);
+            }
+
+            base.OnPropertyChanged(e);
+        }
 
         private void OnLiteCheckBoxLoaded(object sender, RoutedEventArgs e)
         {
-            SetCheckBoxValue(Checked);
-            RaiseEvent(new RoutedEventArgs(CheckedValueRoutedEvent));
-        }
-
-        protected override void OnMouseLeave(MouseEventArgs e)
-        {
-            __border.BorderBrush.Opacity = 1;
-
-            base.OnMouseLeave(e);
-        }
-
-        protected override void OnMouseEnter(MouseEventArgs e)
-        {
-            __border.BorderBrush.Opacity = 0.6;
-
-            base.OnMouseEnter(e);
+            UpdateCheckBox(Checked);
         }
 
         protected override void OnMouseUp(MouseButtonEventArgs e)
         {
             if (_clicked)
             {
-                SetCheckBoxValue(!Checked);
+                Checked = !Checked;
                 _clicked = false;
             }
 

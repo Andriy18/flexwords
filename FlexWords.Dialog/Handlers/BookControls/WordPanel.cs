@@ -28,7 +28,7 @@ namespace FlexWords.Dialog.Handlers
         public int WordIndex { get; set; }
         public string Text { get; set; } = string.Empty;
         public FlexWordsDialog? Dialog { get; set; }
-        public Workspace Readspace
+        public ThemeSet Readspace
         {
             set
             {
@@ -55,7 +55,7 @@ namespace FlexWords.Dialog.Handlers
             else Background = Brushes.Transparent;
         }
 
-        public void Add(LetterControl control, char letter, int index, Workspace workspace)
+        public void Add(LetterControl control, char letter, int index, ThemeSet workspace)
         {
             control.Text = letter.ToString();
             control.LetterIndex = index;
@@ -80,7 +80,7 @@ namespace FlexWords.Dialog.Handlers
             Margin = ControlConstants.BaseMargin;
         }
 
-        public void SoftUpdate(Workspace workspace)
+        public void SoftUpdate(ThemeSet workspace)
         {
             _selected = false;
             _hoverOpacity = workspace.HoveredTextTransparency;
@@ -95,7 +95,7 @@ namespace FlexWords.Dialog.Handlers
             }
         }
 
-        public void SuperSoftUpdate(Workspace workspace)
+        public void SuperSoftUpdate(ThemeSet workspace)
         {
             _hoverOpacity = workspace.HoveredTextTransparency;
             _letterForeground = workspace.Foreground;

@@ -11,71 +11,98 @@ namespace FlexWords.Dialog.Controls.Components
 {
     public partial class LiteSlider : UserControl
     {
+        private readonly Timer _timer = new(5);
+        private double _mouseX;
+        private double _dpiX;
+        private Thickness _lazyScrollMargin;
+
         public static readonly DependencyProperty UseIntegerProperty =
-            DependencyProperty.RegisterAttached(
+            DependencyProperty.Register(
                 nameof(UseInteger),
                 typeof(bool),
                 typeof(LiteSlider),
-                new PropertyMetadata(true));
+                new FrameworkPropertyMetadata(true,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public static readonly DependencyProperty ValueProperty =
-            DependencyProperty.RegisterAttached(
+            DependencyProperty.Register(
                 nameof(Value),
                 typeof(double),
                 typeof(LiteSlider),
-                new PropertyMetadata(0.0));
+                new FrameworkPropertyMetadata(default(double),
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public static readonly DependencyProperty MaxValueProperty =
-            DependencyProperty.RegisterAttached(
+            DependencyProperty.Register(
                 nameof(MaxValue),
                 typeof(double),
                 typeof(LiteSlider),
-                new PropertyMetadata(100.0));
+                new FrameworkPropertyMetadata(default(double),
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public static readonly DependencyProperty MinValueProperty =
-            DependencyProperty.RegisterAttached(
+            DependencyProperty.Register(
                 nameof(MinValue),
                 typeof(double),
                 typeof(LiteSlider),
-                new PropertyMetadata(0.0));
+                new FrameworkPropertyMetadata(default(double),
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public static readonly DependencyProperty StepProperty =
-            DependencyProperty.RegisterAttached(
+            DependencyProperty.Register(
                 nameof(Step),
                 typeof(double?),
                 typeof(LiteSlider),
-                new PropertyMetadata(null));
+                new FrameworkPropertyMetadata(null,
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public static readonly RoutedEvent ValueChangedRoutedEvent =
-            EventManager.RegisterRoutedEvent(
-                nameof(ValueChanged),
-                RoutingStrategy.Direct,
-                typeof(EventHandler<RoutedEventArgs>),
-                typeof(LiteSlider));
+        protected static readonly DependencyProperty ScrollMarginProperty =
+            DependencyProperty.Register(
+                nameof(ScrollMargin),
+                typeof(Thickness),
+                typeof(LiteSlider),
+                new FrameworkPropertyMetadata(default(Thickness),
+                    FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public static readonly DependencyProperty AnimateHoverProperty =
-           DependencyProperty.RegisterAttached(
+           DependencyProperty.Register(
                nameof(AnimateHover),
                typeof(bool),
                typeof(LiteSlider),
-               new PropertyMetadata(true));
+               new FrameworkPropertyMetadata(true,
+                   FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public static readonly DependencyProperty LazyLoadingProperty =
-           DependencyProperty.RegisterAttached(
+           DependencyProperty.Register(
                nameof(LazyLoading),
                typeof(bool),
                typeof(LiteSlider),
-               new PropertyMetadata(false));
+               new FrameworkPropertyMetadata(default(bool),
+                   FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
-        public event RoutedEventHandler ValueChanged
+        private double _scrollStep
         {
-            add { AddHandler(ValueChangedRoutedEvent, value); }
-            remove { RemoveHandler(ValueChangedRoutedEvent, value); }
+            get
+            {
+                if (Step is null) return UseInteger ? 1.0 : 0.01;
+
+                return UseInteger ? Math.Round(Step.Value, MidpointRounding.AwayFromZero) : Step.Value;
+            }
         }
-        public bool UseInteger
+        private double _maxSliderWidth => __internal_border.ActualWidth - __slider.ActualWidth;
+
+        protected Thickness ScrollMargin
         {
-            get => (bool)GetValue(UseIntegerProperty);
-            set => SetValue(UseIntegerProperty, value);
+            get => (Thickness)GetValue(ScrollMarginProperty);
+            set
+            {
+                Thickness oldValue = (Thickness)GetValue(ScrollMarginProperty);
+                Thickness newValue = new(ClampWidth(value.Left), 0, 0, 0);
+
+                if (Math.Abs(newValue.Left - oldValue.Left) < double.Epsilon) return;
+
+                SetValue(ScrollMarginProperty, value);
+            }
         }
         public double Value
         {
@@ -88,18 +115,12 @@ namespace FlexWords.Dialog.Controls.Components
                 if (Math.Abs(newValue - oldValue) < double.Epsilon) return;
 
                 SetValue(ValueProperty, newValue);
-
-                if (_updateSlider)
-                {
-                    double newWidth = GetWidthRelativeToValue(newValue);
-                    newWidth = ClampWidth(newWidth);
-                    __slider.Margin = new Thickness(newWidth, 0, 0, 0);
-                }
-                
-                if (_canRaiseEvent) RaiseEvent(new RoutedEventArgs(ValueChangedRoutedEvent));
-
-                UpdateText();
             }
+        }
+        public bool UseInteger
+        {
+            get => (bool)GetValue(UseIntegerProperty);
+            set => SetValue(UseIntegerProperty, value);
         }
         public double MaxValue
         {
@@ -143,17 +164,7 @@ namespace FlexWords.Dialog.Controls.Components
                 _mouseX = newX;
 
                 newWidth = ClampWidth(newWidth);
-                __slider.Margin = new Thickness(newWidth, 0, 0, 0);
-
-                double newVlaue = GetValueRelativeToWidth(newWidth);
-                newVlaue = ClampValue(newVlaue);
-
-                if (Math.Abs(newVlaue - Value) < double.Epsilon) return;
-                {
-                    _updateSlider = false;
-                    Value = newVlaue;
-                    _updateSlider = true;
-                }
+                ScrollMargin = new Thickness(newWidth, 0, 0, 0);
             }, System.Windows.Threading.DispatcherPriority.Send);
         }
 
@@ -164,17 +175,6 @@ namespace FlexWords.Dialog.Controls.Components
 
             base.OnMouseWheel(e);
         }
-
-        private double _scrollStep
-        {
-            get
-            {
-                if (Step is null) return UseInteger ? 1.0 : 0.01;
-
-                return UseInteger ? Math.Round(Step.Value, MidpointRounding.AwayFromZero) : Step.Value;
-            }
-        }
-        private double _maxSliderWidth => __internal_border.ActualWidth - __slider.ActualWidth;
 
         private double GetValueRelativeToWidth(double width)
         {
@@ -209,36 +209,58 @@ namespace FlexWords.Dialog.Controls.Components
 
             return value;
         }
-    }
 
-    public partial class LiteSlider
-    {
-        private readonly Timer _timer = new(15);
-        private double _mouseX;
-        private double _dpiX;
-        private bool _canRaiseEvent = true;
-        private bool _updateSlider = true;
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (e.Property == ValueProperty)
+            {
+                if (!_timer.Enabled) UpdateScrollMargin((double)e.NewValue);
+            }
+            else if (e.Property == ScrollMarginProperty)
+            {
+                if (LazyLoading)
+                {
+                    _lazyScrollMargin = (Thickness)e.NewValue;
+                }
+                else UpdateValue((Thickness)e.NewValue);
+
+                UpdateText();
+            }
+
+            base.OnPropertyChanged(e);
+        }
+
+        private void UpdateValue(Thickness thickness)
+        {
+            Value = GetValueRelativeToWidth(thickness.Left);
+        }
+
+        private void UpdateScrollMargin(double newValue)
+        {
+            newValue = GetWidthRelativeToValue(newValue);
+            ScrollMargin = new Thickness(newValue, 0, 0, 0);
+        }
 
         private void OnLiteSliderLoaded(object sender, RoutedEventArgs e)
         {
             _dpiX = VisualTreeHelper.GetDpi(this).DpiScaleX;
 
             double newWidth = GetWidthRelativeToValue(Value);
-            newWidth = ClampWidth(newWidth);
-            __slider.Margin = new Thickness(newWidth, 0, 0, 0);
-            RaiseEvent(new RoutedEventArgs(ValueChangedRoutedEvent));
+            ScrollMargin = new Thickness(newWidth, 0, 0, 0);
             UpdateText();
         }
 
         private void UpdateText()
         {
+            double newValue = GetValueRelativeToWidth(ScrollMargin.Left);
+
             if (UseInteger)
             {
-                __text.Text = $"{Math.Round(Value, MidpointRounding.ToEven)}";
+                __text.Text = $"{Math.Round(newValue, MidpointRounding.ToEven)}";
             }
             else
             {
-                float value = (float)Math.Round(Value, 2, MidpointRounding.ToEven);
+                float value = (float)Math.Round(newValue, 2, MidpointRounding.ToEven);
 
                 if (value % 1.0 > float.Epsilon) __text.Text = $"{value}";
                 else __text.Text = $"{value:f1}";
@@ -265,12 +287,7 @@ namespace FlexWords.Dialog.Controls.Components
         {
             _mouseX = GetMousePosition().X;
 
-            if (!_timer.Enabled)
-            {
-                if (LazyLoading) _canRaiseEvent = false;
-
-                _timer.Start();
-            }
+            if (!_timer.Enabled) _timer.Start();
 
             SetSliderBackgroundOpacity(0.8);
 
@@ -284,8 +301,7 @@ namespace FlexWords.Dialog.Controls.Components
             {
                 _timer.Stop();
 
-                _canRaiseEvent = true;
-                if (LazyLoading) RaiseEvent(new RoutedEventArgs(ValueChangedRoutedEvent));
+                if (LazyLoading) UpdateValue(_lazyScrollMargin);
             }
 
             SetSliderBackgroundOpacity(1);

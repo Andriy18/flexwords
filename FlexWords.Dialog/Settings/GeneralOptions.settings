@@ -2,10 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="FlexWords.Dialog.Settings" GeneratedClassName="GeneralOptions">
   <Profiles />
   <Settings>
-    <Setting Name="LastBookPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="Workspaces" Type="System.String" Scope="User">
+    <Setting Name="LastUsedBook" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="LastBkmark" Type="System.String" Scope="User">
@@ -19,9 +16,6 @@
     </Setting>
     <Setting Name="AdaptiveKerning" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="LastWorkspaceIndex" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="FontSize" Type="System.Double" Scope="User">
       <Value Profile="(Default)">21</Value>
@@ -53,9 +47,6 @@
     <Setting Name="Indent" Type="System.Double" Scope="User">
       <Value Profile="(Default)">45</Value>
     </Setting>
-    <Setting Name="SetDefaultValues" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="CaptureBkmark" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
@@ -79,6 +70,12 @@
     </Setting>
     <Setting Name="LastUsedFolder" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Themes" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="ThemeIndex" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>
